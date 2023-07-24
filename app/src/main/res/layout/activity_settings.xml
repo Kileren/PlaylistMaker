@@ -48,8 +48,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="@dimen/medium_inset"
+                android:paddingEnd="@dimen/medium_inset"
                 android:text="@string/dark_theme"
                 android:textSize="@dimen/YS_16"
                 android:textColor="@color/black"/>
@@ -70,8 +70,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="@dimen/medium_inset"
+                android:paddingEnd="@dimen/medium_inset"
                 android:text="@string/share_app"
                 android:textSize="@dimen/YS_16"
                 android:textColor="@color/black"/>
@@ -94,8 +94,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="@dimen/medium_inset"
+                android:paddingEnd="@dimen/medium_inset"
                 android:text="@string/write_to_support"
                 android:textSize="@dimen/YS_16"
                 android:textColor="@color/black"/>
@@ -118,8 +118,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="@dimen/medium_inset"
+                android:paddingEnd="@dimen/medium_inset"
                 android:text="@string/user_agreement"
                 android:textSize="@dimen/YS_16"
                 android:textColor="@color/black"/>
