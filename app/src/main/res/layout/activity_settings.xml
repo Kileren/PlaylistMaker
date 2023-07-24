@@ -12,17 +12,20 @@
         android:layout_height="56dp">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/arrow_back_nav_bar"/>
+            android:layout_marginStart="4dp"
+            android:src="@drawable/arrow_back_nav_bar"
+            android:scaleType="centerInside"
+            android:foreground="?attr/selectableItemBackground" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="12dp"
             android:text="@string/settings"
             android:textSize="@dimen/YS_22"
             android:textColor="@color/YPBlack"
