@@ -7,19 +7,14 @@
     android:orientation="vertical"
     android:paddingHorizontal="16dp">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="14dp"
-            android:text="@string/app_name"
-            android:textColor="@color/YPWhite"
-            android:textSize="@dimen/primary_text_size"
-            android:textStyle="bold" />
-    </FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:paddingTop="14dp"
+        android:text="@string/app_name"
+        android:textColor="@color/YPWhite"
+        android:textSize="@dimen/primary_text_size"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
