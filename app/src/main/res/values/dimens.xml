@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="zero_inset">0dp</dimen>
+    <dimen name="medium_inset">16dp</dimen>
+    <dimen name="medium_padding">8dp</dimen>
+    <dimen name="settings_cell_height">60dp</dimen>
+    <dimen name="medium_corner_radius">16dp</dimen>
+    <dimen name="primary_text_size">22sp</dimen>
+    <dimen name="YS_22">22sp</dimen>
+    <dimen name="YS_16">16sp</dimen>
+</resources>
