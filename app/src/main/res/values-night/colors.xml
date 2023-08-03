@@ -13,8 +13,8 @@
 
     <!-- Dynamic Colors -->
     <!-- Text -->
-    <color name="dynamic.text.primary">@color/YPBlack</color>
+    <color name="dynamic.text.primary">@color/YPWhite</color>
     <!-- Background -->
-    <color name="dynamic.background">@color/YPWhite</color>
-    <color name="dynamic.backgroundOnMain">@color/YPBlue</color>
+    <color name="dynamic.background">@color/YPBlack</color>
+    <color name="dynamic.backgroundOnMain">@color/YPBlack</color>
 </resources>
