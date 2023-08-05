@@ -56,8 +56,10 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/share_app_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_cell_height">
+            android:layout_height="@dimen/settings_cell_height"
+            android:foreground="?attr/selectableItemBackground" >
 
             <TextView
                 style="@style/SettingsButtonTextStyle"
@@ -68,8 +70,10 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/write_to_support_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_cell_height">
+            android:layout_height="@dimen/settings_cell_height"
+            android:foreground="?attr/selectableItemBackground">
 
             <TextView
                 style="@style/SettingsButtonTextStyle"
@@ -80,8 +84,10 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/user_agreement_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_cell_height">
+            android:layout_height="@dimen/settings_cell_height"
+            android:foreground="?attr/selectableItemBackground">
 
             <TextView
                 style="@style/SettingsButtonTextStyle"
