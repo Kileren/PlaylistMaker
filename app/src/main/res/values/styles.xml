@@ -2,10 +2,10 @@
 <resources>
     <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/zero_height</item>
+        <item name="android:layout_height">@dimen/zero_size</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:insetTop">@dimen/zero_height</item>
-        <item name="android:insetBottom">@dimen/zero_height</item>
+        <item name="android:insetTop">@dimen/zero_size</item>
+        <item name="android:insetBottom">@dimen/zero_size</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:outlineProvider">none</item>
         <item name="android:backgroundTint">@color/YPWhite</item>

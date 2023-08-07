@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="zero_height">0dp</dimen>
-    <dimen name="medium_height">16dp</dimen>
-    <dimen name="medium_padding">8dp</dimen>
+    <dimen name="zero_size">0dp</dimen>
+    <dimen name="medium_size">16dp</dimen>
+    <dimen name="small_padding">8dp</dimen>
+    <dimen name="medium_padding">16dp</dimen>
     <dimen name="settings_cell_height">60dp</dimen>
+    <dimen name="small_corner_radius">8dp</dimen>
     <dimen name="medium_corner_radius">16dp</dimen>
     <dimen name="primary_text_size">22sp</dimen>
     <dimen name="YS_22">22sp</dimen>
