@@ -36,24 +36,23 @@ class SettingsActivity: AppCompatActivity() {
     }
 
     private fun shareApp() {
-        val urlToShare = "https://practicum.yandex.ru/profile/android-developer/"
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
-        shareIntent.putExtra(Intent.EXTRA_TEXT, urlToShare)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.practicum_android_course_link))
         startActivity(shareIntent)
     }
 
     private fun writeToSupport() {
         val mailIntent = Intent(Intent.ACTION_SENDTO)
         mailIntent.data = Uri.parse("mailto:")
-        mailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("gileren8613@yandex.ru"))
-        mailIntent.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.support_message_theme))
-        mailIntent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.support_message_body))
+        mailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_message_email)))
+        mailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_message_theme))
+        mailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message_body))
         startActivity(mailIntent)
     }
 
     private fun openUserAgreement() {
-        val agreementURL = "https://yandex.ru/legal/practicum_offer/"
+        val agreementURL = getString(R.string.practicum_user_agreement_link)
         val browserIntent = Intent(Intent.ACTION_VIEW)
         browserIntent.data = Uri.parse(agreementURL)
         startActivity(browserIntent)
