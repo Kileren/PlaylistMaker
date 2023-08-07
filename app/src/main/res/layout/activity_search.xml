@@ -58,7 +58,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/small_padding"
-                android:layout_marginEnd="40dp"
+                android:layout_marginEnd="@dimen/clear_text_field_icon_width"
                 android:hint="@string/search"
                 android:inputType="text"
                 android:lines="1"
@@ -72,7 +72,7 @@
 
         <ImageView
             android:id="@+id/clear_image_view"
-            android:layout_width="40dp"
+            android:layout_width="@dimen/clear_text_field_icon_width"
             android:layout_height="36dp"
             android:layout_gravity="end"
             android:layout_marginTop="8dp"
