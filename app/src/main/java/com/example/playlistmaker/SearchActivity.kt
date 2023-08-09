@@ -13,7 +13,7 @@ import androidx.core.view.isVisible
 class SearchActivity : AppCompatActivity() {
 
     companion object {
-        const val SEARCH_VALUE = "SEARCH_VALUE"
+        private const val SEARCH_VALUE = "SEARCH_VALUE"
     }
 
     private lateinit var backButton: ImageView

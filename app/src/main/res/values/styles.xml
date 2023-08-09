@@ -31,8 +31,6 @@
     <style name="SettingsImageViewStyle">
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
-        <item name="android:layout_gravity">end</item>
-        <item name="android:layout_marginTop">19dp</item>
         <item name="tint">@color/dynamic.text.primary</item>
     </style>
 </resources>

@@ -43,12 +43,13 @@ class SettingsActivity: AppCompatActivity() {
     }
 
     private fun writeToSupport() {
-        val mailIntent = Intent(Intent.ACTION_SENDTO)
-        mailIntent.data = Uri.parse("mailto:")
-        mailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_message_email)))
-        mailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_message_theme))
-        mailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message_body))
-        startActivity(mailIntent)
+        Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_message_email)))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_message_theme))
+            putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message_body))
+            startActivity(this)
+        }
     }
 
     private fun openUserAgreement() {

@@ -66,6 +66,8 @@
                 android:text="@string/share_app"/>
             <ImageView
                 style="@style/SettingsImageViewStyle"
+                android:layout_gravity="end"
+                android:layout_marginTop="19dp"
                 android:src="@drawable/share" />
         </FrameLayout>
 
@@ -80,6 +82,8 @@
                 android:text="@string/write_to_support"/>
             <ImageView
                 style="@style/SettingsImageViewStyle"
+                android:layout_gravity="end"
+                android:layout_marginTop="19dp"
                 android:src="@drawable/support" />
         </FrameLayout>
 
@@ -94,6 +98,8 @@
                 android:text="@string/user_agreement"/>
             <ImageView
                 style="@style/SettingsImageViewStyle"
+                android:layout_gravity="end"
+                android:layout_marginTop="19dp"
                 android:src="@drawable/arrow_right" />
         </FrameLayout>
     </LinearLayout>
