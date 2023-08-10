@@ -4,12 +4,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SearchActivity">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="TODO: Search Activity" />
+        android:layout_height="56dp">
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/arrow_back_nav_bar"
+            android:scaleType="centerInside"
+            android:foreground="?attr/selectableItemBackground"
+            app:tint="@color/dynamic.text.primary" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:text="@string/search"
+            android:textSize="@dimen/YS_22"
+            android:textColor="@color/dynamic.text.primary" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginHorizontal="@dimen/medium_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:background="@drawable/small_rounded_gray_background">
+
+            <ImageView
+                android:layout_width="@dimen/medium_size"
+                android:layout_height="@dimen/medium_size"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/search_loupe_bold"
+                app:tint="@color/dynamic.text.secondary" />
+
+            <EditText
+                android:id="@+id/search_text_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/clear_text_field_icon_width"
+                android:hint="@string/search"
+                android:inputType="text"
+                android:lines="1"
+                android:background="@null"
+                android:fontFamily="@font/ys_display_regular"
+                android:textColorHint="@color/dynamic.text.secondary"
+                android:textColor="@color/YPBlack"
+                android:textSize="@dimen/YS_16" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/clear_image_view"
+            android:layout_width="@dimen/clear_text_field_icon_width"
+            android:layout_height="36dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:scaleType="center"
+            android:src="@drawable/clear_icon"
+            android:foreground="?attr/selectableItemBackground" />
+
+    </FrameLayout>
 
 </LinearLayout>
