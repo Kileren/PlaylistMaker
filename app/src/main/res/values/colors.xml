@@ -17,6 +17,7 @@
     <!-- Text -->
     <color name="dynamic.text.primary">@color/YPBlack</color>
     <color name="dynamic.text.secondary">@color/YPTextGray</color>
+    <color name="dynamic.text.search">@color/YPTextGray</color>
     <!-- Background -->
     <color name="dynamic.background">@color/YPWhite</color>
     <color name="dynamic.backgroundOnMain">@color/YPBlue</color>

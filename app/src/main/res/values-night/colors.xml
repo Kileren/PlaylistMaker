@@ -16,7 +16,8 @@
     <!-- Dynamic Colors -->
     <!-- Text -->
     <color name="dynamic.text.primary">@color/YPWhite</color>
-    <color name="dynamic.text.secondary">@color/YPBlack</color>
+    <color name="dynamic.text.secondary">@color/YPWhite</color>
+    <color name="dynamic.text.search">@color/YPBlack</color>
     <!-- Background -->
     <color name="dynamic.background">@color/YPBlack</color>
     <color name="dynamic.backgroundOnMain">@color/YPBlack</color>
