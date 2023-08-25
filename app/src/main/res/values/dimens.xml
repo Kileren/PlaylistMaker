@@ -2,21 +2,27 @@
 <resources>
     <!-- SIZES -->
     <dimen name="zero_size">0dp</dimen>
+    <dimen name="size_12">12dp</dimen>
+    <dimen name="size_13">13dp</dimen>
     <dimen name="medium_size">16dp</dimen>
+    <dimen name="size_64">64dp</dimen>
 
     <!-- PADDINGS -->
     <dimen name="small_padding">8dp</dimen>
     <dimen name="medium_padding">16dp</dimen>
 
     <!-- RADIUS -->
+    <dimen name="xss_corner_radius">2dp</dimen>
     <dimen name="small_corner_radius">8dp</dimen>
     <dimen name="medium_corner_radius">16dp</dimen>
 
     <!-- TEXT SIZES -->
-    <dimen name="YS_22">22sp</dimen>
+    <dimen name="YS_11">11sp</dimen>
     <dimen name="YS_16">16sp</dimen>
+    <dimen name="YS_22">22sp</dimen>
 
     <!-- OTHER -->
     <dimen name="settings_cell_height">60dp</dimen>
     <dimen name="clear_text_field_icon_width">40dp</dimen>
+    <dimen name="search_image_view_poster_size">45dp</dimen>
 </resources>
