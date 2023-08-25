@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:orientation="vertical"
-        android:paddingStart="@dimen/medium_size"
+        android:paddingStart="@dimen/size_16"
         android:paddingEnd="12dp" >
 
         <FrameLayout

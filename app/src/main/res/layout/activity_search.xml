@@ -35,7 +35,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_marginHorizontal="@dimen/medium_padding">
+        android:layout_marginHorizontal="@dimen/size_16">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,8 +45,8 @@
             android:background="@drawable/small_rounded_gray_background">
 
             <ImageView
-                android:layout_width="@dimen/medium_size"
-                android:layout_height="@dimen/medium_size"
+                android:layout_width="@dimen/size_16"
+                android:layout_height="@dimen/size_16"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="12dp"
                 android:src="@drawable/search_loupe_bold"
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/small_padding"
+                android:layout_marginStart="@dimen/size_8"
                 android:layout_marginEnd="@dimen/clear_text_field_icon_width"
                 android:hint="@string/search"
                 android:inputType="text"
@@ -86,6 +86,6 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/medium_padding" />
+        android:layout_marginTop="@dimen/size_16" />
 
 </LinearLayout>
