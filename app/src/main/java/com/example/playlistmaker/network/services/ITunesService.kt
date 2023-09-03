@@ -1,5 +1,6 @@
 package com.example.playlistmaker.network.services
 
+import com.example.playlistmaker.models.Track
 import com.example.playlistmaker.network.Endpoint
 import com.example.playlistmaker.network.api.ITunesApi
 import com.example.playlistmaker.network.responses.ITunesSearchResponse
@@ -18,18 +19,29 @@ class ITunesService {
         .build()
     private val service = retrofit.create(ITunesApi::class.java)
 
-    fun search(text: String) {
+    fun search(
+        text: String,
+        onSuccess: (List<Track>) -> Unit,
+        onError: () -> Unit
+    ) {
         service.search(text).enqueue(object : Callback<ITunesSearchResponse> {
             override fun onResponse(
                 call: Call<ITunesSearchResponse>,
                 response: Response<ITunesSearchResponse>
             ) {
-                println("#### CODE - ${response.code()}")
-                println("#### BODY - ${response.body()}")
+                when (response.code()) {
+                    200 -> {
+                        val songs = response.body()?.tracks
+                        onSuccess(songs ?: listOf())
+                    }
+                    else -> {
+                        onError()
+                    }
+                }
             }
 
             override fun onFailure(call: Call<ITunesSearchResponse>, t: Throwable) {
-                println("#### ERROR - $t")
+                onError()
             }
         })
     }
