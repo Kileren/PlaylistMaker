@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,8 +28,9 @@ class SearchViewHolder(parentView: ViewGroup): RecyclerView.ViewHolder(
             .transform(RoundedCorners(cornerRadius))
             .placeholder(R.drawable.image_placeholder)
             .into(posterImageView)
+
         songTextView.text = model.trackName
         artistTextView.text = model.artistName
-        durationTextView.text = model.trackTime
+        durationTextView.text = model.trackTime()
     }
 }

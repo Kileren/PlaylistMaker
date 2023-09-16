@@ -5,11 +5,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.models.Track
 
 class SearchAdapter(
-    private val data: List<Track>
+    private var data: List<Track>
 ): RecyclerView.Adapter<SearchViewHolder>()  {
 
+    private lateinit var viewHolder: SearchViewHolder
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        return SearchViewHolder(parent)
+        viewHolder = SearchViewHolder(parent)
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
@@ -17,4 +20,9 @@ class SearchAdapter(
     }
 
     override fun getItemCount(): Int = data.size
+
+    fun update(data: List<Track>) {
+        this.data = data
+        notifyDataSetChanged()
+    }
 }
