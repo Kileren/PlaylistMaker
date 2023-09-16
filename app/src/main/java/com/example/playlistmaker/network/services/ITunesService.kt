@@ -12,12 +12,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ITunesService {
 
-    private val converterFactory = GsonConverterFactory.create()
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(Endpoint.ITUNES.baseUrl)
-        .addConverterFactory(converterFactory)
-        .build()
-    private val service = retrofit.create(ITunesApi::class.java)
+    private val converterFactory by lazy { GsonConverterFactory.create() }
+    private val retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(Endpoint.ITUNES.baseUrl)
+            .addConverterFactory(converterFactory)
+            .build()
+    }
+    private val service by lazy { retrofit.create(ITunesApi::class.java) }
 
     fun search(
         text: String,

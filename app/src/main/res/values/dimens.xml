@@ -9,6 +9,7 @@
     <dimen name="size_16">16dp</dimen>
     <dimen name="size_24">24dp</dimen>
     <dimen name="size_64">64dp</dimen>
+    <dimen name="size_120">120dp</dimen>
 
     <!-- RADIUS -->
     <dimen name="xss_corner_radius">2dp</dimen>

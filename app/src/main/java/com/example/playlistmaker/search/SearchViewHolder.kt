@@ -22,16 +22,13 @@ class SearchViewHolder(parentView: ViewGroup): RecyclerView.ViewHolder(
 
     fun bind(model: Track) {
         val cornerRadius = itemView.context.resources.getDimensionPixelSize(R.dimen.xss_corner_radius)
-        if (model.artworkUrl100.isNullOrEmpty()) {
-            posterImageView.setImageDrawable(itemView.resources.getDrawable(R.drawable.image_placeholder))
-        } else {
-            Glide.with(itemView)
-                .load(model.artworkUrl100)
-                .centerCrop()
-                .transform(RoundedCorners(cornerRadius))
-                .placeholder(R.drawable.image_placeholder)
-                .into(posterImageView)
-        }
+        Glide.with(itemView)
+            .load(model.artworkUrl100)
+            .centerCrop()
+            .transform(RoundedCorners(cornerRadius))
+            .placeholder(R.drawable.image_placeholder)
+            .into(posterImageView)
+
         songTextView.text = model.trackName
         artistTextView.text = model.artistName
         durationTextView.text = model.trackTime()
