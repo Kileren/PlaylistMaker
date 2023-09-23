@@ -156,12 +156,14 @@ class SearchActivity : AppCompatActivity() {
         } else {
             exceptionContainer.visibility = View.GONE
         }
+        hideHistory()
     }
 
     private fun showNetworkError() {
         searchAdapter.update(listOf())
         exceptionContainer.visibility = View.VISIBLE
         exceptionRefreshButton.visibility = View.VISIBLE
+        hideHistory()
 
         exceptionIcon.setImageDrawable(getDrawable(R.drawable.error_search_icon))
         exceptionTextView.text = getString(R.string.search_connection_error)
@@ -171,6 +173,7 @@ class SearchActivity : AppCompatActivity() {
         val tracks = sharedPreferencesStorage.searchHistory
         if (tracks.isEmpty()) return
         historyContainer.visibility = View.VISIBLE
+        exceptionContainer.visibility = View.GONE
         updateHistoryListIfNeeded()
     }
 
