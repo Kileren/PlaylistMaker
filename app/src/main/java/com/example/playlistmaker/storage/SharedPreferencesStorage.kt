@@ -2,6 +2,7 @@ package com.example.playlistmaker.storage
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import androidx.core.content.edit
 import com.example.playlistmaker.models.Track
 import com.google.gson.Gson
 
@@ -24,9 +25,9 @@ class SharedPreferencesStorage(private val context: Context) {
             return prefs.getBoolean(darkThemeKey, false)
         }
         set(value) {
-            prefs.edit()
-                .putBoolean(darkThemeKey, value)
-                .apply()
+            prefs.edit {
+                putBoolean(darkThemeKey, value)
+            }
         }
 
     /**
@@ -39,8 +40,18 @@ class SharedPreferencesStorage(private val context: Context) {
         }
         set(value) {
             val json = Gson().toJson(value)
-            prefs.edit()
-                .putString(searchHistoryKey, json)
-                .apply()
+            prefs.edit {
+                putString(searchHistoryKey, json)
+            }
         }
+}
+
+fun SharedPreferencesStorage.addTrackToHistory(track: Track) {
+    var history = searchHistory.toMutableList()
+    history.removeIf { it.trackId == track.trackId }
+    history.add(0, track)
+    if (history.size > 10) {
+        history = history.subList(0, 10)
+    }
+    searchHistory = history.toTypedArray()
 }

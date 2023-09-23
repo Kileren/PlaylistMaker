@@ -20,6 +20,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.models.Track
 import com.example.playlistmaker.network.services.ITunesService
 import com.example.playlistmaker.storage.SharedPreferencesStorage
+import com.example.playlistmaker.storage.addTrackToHistory
 
 class SearchActivity : AppCompatActivity() {
 
@@ -194,13 +195,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun onTrackTap(track: Track) {
-        var history = sharedPreferencesStorage.searchHistory.toMutableList()
-        history.removeIf { it.trackId == track.trackId }
-        history.add(0, track)
-        if (history.size > 10) {
-            history = history.subList(0, 10)
-        }
-        sharedPreferencesStorage.searchHistory = history.toTypedArray()
+        sharedPreferencesStorage.addTrackToHistory(track)
         updateHistoryListIfNeeded()
     }
 }
