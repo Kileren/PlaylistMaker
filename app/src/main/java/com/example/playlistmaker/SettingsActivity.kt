@@ -6,26 +6,25 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity: AppCompatActivity() {
 
-    private lateinit var backButton: ImageView
-    private lateinit var shareAppButton: View
-    private lateinit var writeToSupportButton: View
-    private lateinit var userAgreementButton: View
+    private val backButton: ImageView by lazy { findViewById(R.id.back_button) }
+    private val themeSwitcher: SwitchMaterial by lazy { findViewById(R.id.theme_switcher) }
+    private val shareAppButton: View by lazy { findViewById(R.id.share_app_button) }
+    private val writeToSupportButton: View by lazy { findViewById(R.id.write_to_support_button) }
+    private val userAgreementButton: View by lazy { findViewById(R.id.user_agreement_button) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        setButtons()
+        configureUI()
         setClickListeners()
     }
 
-    private fun setButtons() {
-        backButton = findViewById(R.id.back_button)
-        shareAppButton = findViewById(R.id.share_app_button)
-        writeToSupportButton = findViewById(R.id.write_to_support_button)
-        userAgreementButton = findViewById(R.id.user_agreement_button)
+    private fun configureUI() {
+        themeSwitcher.isChecked = (applicationContext as App).darkThemeEnabled()
     }
 
     private fun setClickListeners() {
@@ -33,6 +32,9 @@ class SettingsActivity: AppCompatActivity() {
         shareAppButton.setOnClickListener { shareApp() }
         writeToSupportButton.setOnClickListener { writeToSupport() }
         userAgreementButton.setOnClickListener { openUserAgreement() }
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
     }
 
     private fun shareApp() {

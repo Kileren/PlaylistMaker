@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.models.Track
 import com.example.playlistmaker.network.services.ITunesService
+import com.example.playlistmaker.storage.SharedPreferencesStorage
+import com.example.playlistmaker.storage.addTrackToHistory
 
 class SearchActivity : AppCompatActivity() {
 
@@ -26,21 +28,26 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_VALUE = "SEARCH_VALUE"
     }
 
-    private val iTunesService = ITunesService()
-    private val searchAdapter = SearchAdapter(listOf())
+    private val sharedPreferencesStorage by lazy { SharedPreferencesStorage(this) }
+    private val iTunesService by lazy { ITunesService() }
+    private val searchAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
+    private val historyAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
 
-    private lateinit var backButton: ImageView
-    private lateinit var searchEditText: EditText
-    private lateinit var clearImage: ImageView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var exceptionContainer: View
-    private lateinit var exceptionIcon: ImageView
-    private lateinit var exceptionTextView: TextView
-    private lateinit var exceptionRefreshButton: Button
+    private val backButton: ImageView by lazy { findViewById(R.id.back_button) }
+    private val searchEditText: EditText by lazy { findViewById(R.id.search_text_field) }
+    private val clearImage: ImageView by lazy { findViewById(R.id.clear_image_view) }
+    private val recyclerView: RecyclerView by lazy { findViewById(R.id.recycler_view) }
+    private val exceptionContainer: View by lazy { findViewById(R.id.exception_container) }
+    private val exceptionIcon: ImageView by lazy { findViewById(R.id.exception_image_view) }
+    private val exceptionTextView: TextView by lazy { findViewById(R.id.exception_text_view) }
+    private val exceptionRefreshButton: Button by lazy { findViewById(R.id.refresh_button) }
+    private val historyContainer: View by lazy { findViewById(R.id.history_container) }
+    private val historyRecyclerView: RecyclerView by lazy { findViewById(R.id.history_recycler_view) }
+    private val clearHistoryButton: Button by lazy { findViewById(R.id.clear_history_button) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setViews()
+        configureViews()
         setListeners()
         setupUI()
     }
@@ -59,30 +66,33 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun setViews() {
+    private fun configureViews() {
         setContentView(R.layout.activity_search)
-        backButton = findViewById(R.id.back_button)
-        searchEditText = findViewById(R.id.search_text_field)
-        clearImage = findViewById(R.id.clear_image_view)
-        recyclerView = findViewById(R.id.recycler_view)
-        exceptionContainer = findViewById(R.id.exception_container)
-        exceptionIcon = findViewById(R.id.exception_image_view)
-        exceptionTextView = findViewById(R.id.exception_text_view)
-        exceptionRefreshButton = findViewById(R.id.refresh_button)
-
         exceptionContainer.visibility = View.GONE
+        historyContainer.visibility = View.GONE
     }
 
     private fun setListeners() {
         backButton.setOnClickListener { finish() }
         searchEditText.addTextChangedListener(makeSearchTextWatcher())
         searchEditText.setOnEditorActionListener(makeSearchEditorActionListener())
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchEditText.text.isEmpty()) {
+                showHistoryIfNeeded()
+            } else {
+                hideHistory()
+            }
+        }
         clearImage.setOnClickListener {
             searchEditText.text = null
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(searchEditText.windowToken, 0)
             searchEditText.clearFocus()
             searchAdapter.update(listOf())
+        }
+        clearHistoryButton.setOnClickListener {
+            sharedPreferencesStorage.searchHistory = arrayOf()
+            hideHistory()
         }
     }
 
@@ -92,6 +102,10 @@ class SearchActivity : AppCompatActivity() {
         // Recycler View
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = searchAdapter
+
+        // History Recycler View
+        historyRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        historyRecyclerView.adapter = historyAdapter
     }
 
     private fun makeSearchTextWatcher(): TextWatcher {
@@ -99,6 +113,11 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearImage.isVisible = !s.isNullOrEmpty()
+                if (searchEditText.hasFocus() && s?.isEmpty() == true) {
+                    showHistoryIfNeeded()
+                } else {
+                    hideHistory()
+                }
             }
             override fun afterTextChanged(s: Editable?) {}
         }
@@ -138,20 +157,45 @@ class SearchActivity : AppCompatActivity() {
         } else {
             exceptionContainer.visibility = View.GONE
         }
+        hideHistory()
     }
 
     private fun showNetworkError() {
         searchAdapter.update(listOf())
         exceptionContainer.visibility = View.VISIBLE
         exceptionRefreshButton.visibility = View.VISIBLE
+        hideHistory()
 
         exceptionIcon.setImageDrawable(getDrawable(R.drawable.error_search_icon))
         exceptionTextView.text = getString(R.string.search_connection_error)
+    }
+
+    private fun showHistoryIfNeeded() {
+        val tracks = sharedPreferencesStorage.searchHistory
+        if (tracks.isEmpty()) return
+        historyContainer.visibility = View.VISIBLE
+        exceptionContainer.visibility = View.GONE
+        updateHistoryListIfNeeded()
+    }
+
+    private fun hideHistory() {
+        historyContainer.visibility = View.GONE
+    }
+
+    private fun updateHistoryListIfNeeded() {
+        if (historyContainer.visibility == View.VISIBLE) {
+            historyAdapter.update(sharedPreferencesStorage.searchHistory.toList())
+        }
     }
 
     private fun configureRefreshButton(searchText: String) {
         exceptionRefreshButton.setOnClickListener {
             search(searchText)
         }
+    }
+
+    private fun onTrackTap(track: Track) {
+        sharedPreferencesStorage.addTrackToHistory(track)
+        updateHistoryListIfNeeded()
     }
 }

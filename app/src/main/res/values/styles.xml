@@ -29,8 +29,25 @@
         <item name="android:textColor">@color/dynamic.text.primary</item>
     </style>
     <style name="SettingsImageViewStyle">
-        <item name="android:layout_width">24dp</item>
-        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_width">@dimen/size_24</item>
+        <item name="android:layout_height">@dimen/size_24</item>
         <item name="tint">@color/dynamic.text.primary</item>
     </style>
+    <style name="SupplementaryButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/size_36</item>
+        <item name="android:layout_marginTop">@dimen/size_24</item>
+        <item name="android:insetTop">@dimen/size_0</item>
+        <item name="android:insetBottom">@dimen/size_0</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="textAllCaps">false</item>
+        <item name="fontFamily">@font/ys_text_medium</item>
+        <item name="android:textSize">@dimen/size_14</item>
+        <item name="backgroundTint">@color/dynamic.text.primary</item>
+        <item name="android:textColor">@color/dynamic.background</item>
+        <item name="cornerRadius">18dp</item>
+    </style>
+
 </resources>
