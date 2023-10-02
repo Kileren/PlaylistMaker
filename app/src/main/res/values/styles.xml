@@ -49,5 +49,4 @@
         <item name="android:textColor">@color/dynamic.background</item>
         <item name="cornerRadius">18dp</item>
     </style>
-
 </resources>

@@ -1,6 +1,7 @@
 package com.example.playlistmaker.search
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -16,11 +17,13 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.AudioPlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.models.Track
 import com.example.playlistmaker.network.services.ITunesService
 import com.example.playlistmaker.storage.SharedPreferencesStorage
 import com.example.playlistmaker.storage.addTrackToHistory
+import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
 
@@ -195,6 +198,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun onTrackTap(track: Track) {
+        val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
+        audioPlayer.putExtra(AudioPlayerActivity.trackKey, Gson().toJson(track))
+        startActivity(audioPlayer)
+
         sharedPreferencesStorage.addTrackToHistory(track)
         updateHistoryListIfNeeded()
     }
