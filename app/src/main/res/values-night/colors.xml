@@ -21,4 +21,5 @@
     <!-- Background -->
     <color name="dynamic.background">@color/YPBlack</color>
     <color name="dynamic.backgroundOnMain">@color/YPBlack</color>
+    <color name="dynamic.background.supplementary">#3FFFFFFF</color>
 </resources>
