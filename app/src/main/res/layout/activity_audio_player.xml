@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dynamic.background"
@@ -52,7 +53,7 @@
                 android:id="@+id/poster_image_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="26dp"
+                android:layout_marginTop="@dimen/size_24"
                 android:scaleType="centerCrop"
                 app:layout_constraintDimensionRatio="w,1:1"
                 app:layout_constraintEnd_toStartOf="@id/main_content_right_guideline"
@@ -85,8 +86,8 @@
 
             <ImageButton
                 android:id="@+id/playlist_button"
-                android:layout_width="51dp"
-                android:layout_height="51dp"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:background="@drawable/audio_player_supplementary_button_background"
                 android:src="@drawable/add_to_playlist_icon"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -131,7 +132,7 @@
                 app:layout_constraintTop_toBottomOf="@id/play_button"
                 app:layout_constraintStart_toEndOf="@id/main_content_left_guideline"
                 app:layout_constraintEnd_toStartOf="@id/main_content_right_guideline"
-                android:text="0:30"
+                tools:text="0:30"
                 />
 
             <LinearLayout
