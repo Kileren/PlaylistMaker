@@ -33,6 +33,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_VALUE = "SEARCH_VALUE"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     private val sharedPreferencesStorage by lazy { SharedPreferencesStorage(this) }
@@ -55,6 +56,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { search() }
+    private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,6 +172,15 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (current) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     private fun setTracks(tracks: List<Track>) {
         searchAdapter.update(tracks)
         if (tracks.isEmpty()) {
@@ -231,6 +242,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun onTrackTap(track: Track) {
+        if (!clickDebounce()) return
+
         val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
         audioPlayer.putExtra(AudioPlayerActivity.trackKey, Gson().toJson(track))
         startActivity(audioPlayer)
