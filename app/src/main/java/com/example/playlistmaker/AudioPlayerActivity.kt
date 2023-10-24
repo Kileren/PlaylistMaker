@@ -1,10 +1,13 @@
 package com.example.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -15,6 +18,11 @@ class AudioPlayerActivity: AppCompatActivity() {
 
     companion object {
         const val trackKey = "audioPlayer.track"
+
+        private const val PLAYER_STATE_DEFAULT = 0
+        private const val PLAYER_STATE_PREPARED = 1
+        private const val PLAYER_STATE_PLAYING = 2
+        private const val PLAYER_STATE_PAUSED = 3
     }
 
     private val backButton: ImageView by lazy { findViewById(R.id.back_button) }
@@ -27,14 +35,31 @@ class AudioPlayerActivity: AppCompatActivity() {
     private val genreTextView: TextView by lazy { findViewById(R.id.genre_text_view) }
     private val countryTextView: TextView by lazy { findViewById(R.id.country_text_view) }
     private val albumContainerView: View by lazy { findViewById(R.id.album_container) }
+    private val playButton: ImageButton by lazy { findViewById(R.id.play_button) }
 
     private lateinit var track: Track
+
+    private val player = MediaPlayer()
+    private var playerState = PLAYER_STATE_DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTrack()
         setContentView(R.layout.activity_audio_player)
-        configure()
+        configureUI()
+        configurePlayer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (playerState == PLAYER_STATE_PLAYING) {
+            pausePlayer()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        player.release()
     }
 
     private fun setTrack() {
@@ -46,7 +71,7 @@ class AudioPlayerActivity: AppCompatActivity() {
         }
     }
 
-    private fun configure() {
+    private fun configureUI() {
         val cornerRadius = resources.getDimensionPixelSize(R.dimen.s_corner_radius)
         Glide.with(this)
             .load(track.coverArtwork())
@@ -66,6 +91,43 @@ class AudioPlayerActivity: AppCompatActivity() {
         genreTextView.text = track.genreName
         countryTextView.text = track.country
 
+        playButton.isEnabled = false
+        playButton.setOnClickListener { playbackControl() }
         backButton.setOnClickListener { finish() }
+    }
+
+    private fun configurePlayer() {
+        if (track.previewUrl == null) return
+
+        player.setDataSource(track.previewUrl)
+        player.prepareAsync()
+        player.setOnPreparedListener {
+            playButton.isEnabled = true
+            playerState = PLAYER_STATE_PREPARED
+        }
+        player.setOnCompletionListener {
+            playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.play_icon))
+            playerState = PLAYER_STATE_PREPARED
+        }
+    }
+
+    private fun playbackControl() {
+        when (playerState) {
+            PLAYER_STATE_PLAYING -> pausePlayer()
+            PLAYER_STATE_PREPARED, PLAYER_STATE_PAUSED -> startPlayer()
+            else -> return
+        }
+    }
+
+    private fun startPlayer() {
+        player.start()
+        playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.pause_icon))
+        playerState = PLAYER_STATE_PLAYING
+    }
+
+    private fun pausePlayer() {
+        player.pause()
+        playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.play_icon))
+        playerState = PLAYER_STATE_PAUSED
     }
 }
