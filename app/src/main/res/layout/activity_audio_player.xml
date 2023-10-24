@@ -128,11 +128,11 @@
                 android:fontFamily="@font/ys_display_medium"
                 android:textSize="@dimen/YS_14"
                 android:textColor="@color/dynamic.text.primary"
+                android:text="@string/default_audio_playback_time"
                 android:layout_marginTop="4dp"
                 app:layout_constraintTop_toBottomOf="@id/play_button"
                 app:layout_constraintStart_toEndOf="@id/main_content_left_guideline"
                 app:layout_constraintEnd_toStartOf="@id/main_content_right_guideline"
-                tools:text="0:30"
                 />
 
             <LinearLayout

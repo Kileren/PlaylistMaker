@@ -2,6 +2,8 @@ package com.example.playlistmaker
 
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -13,6 +15,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.models.Track
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AudioPlayerActivity: AppCompatActivity() {
 
@@ -23,6 +27,8 @@ class AudioPlayerActivity: AppCompatActivity() {
         private const val PLAYER_STATE_PREPARED = 1
         private const val PLAYER_STATE_PLAYING = 2
         private const val PLAYER_STATE_PAUSED = 3
+
+        private const val PLAYER_PLAYBACK_REFRESH_DELAY = 300L
     }
 
     private val backButton: ImageView by lazy { findViewById(R.id.back_button) }
@@ -36,11 +42,14 @@ class AudioPlayerActivity: AppCompatActivity() {
     private val countryTextView: TextView by lazy { findViewById(R.id.country_text_view) }
     private val albumContainerView: View by lazy { findViewById(R.id.album_container) }
     private val playButton: ImageButton by lazy { findViewById(R.id.play_button) }
+    private val playbackTimeTextView: TextView by lazy { findViewById(R.id.playback_time_text_view) }
 
     private lateinit var track: Track
 
+    private val handler = Handler(Looper.getMainLooper())
     private val player = MediaPlayer()
     private var playerState = PLAYER_STATE_DEFAULT
+    private var playerTimerRunnable = Runnable { refreshPlaybackTime() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +69,7 @@ class AudioPlayerActivity: AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         player.release()
+        stopPlaybackTimeRefreshing()
     }
 
     private fun setTrack() {
@@ -108,6 +118,8 @@ class AudioPlayerActivity: AppCompatActivity() {
         player.setOnCompletionListener {
             playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.play_icon))
             playerState = PLAYER_STATE_PREPARED
+            stopPlaybackTimeRefreshing()
+            resetPlaybackTime()
         }
     }
 
@@ -123,11 +135,31 @@ class AudioPlayerActivity: AppCompatActivity() {
         player.start()
         playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.pause_icon))
         playerState = PLAYER_STATE_PLAYING
+        startPlaybackTimeRefreshing()
     }
 
     private fun pausePlayer() {
         player.pause()
         playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.play_icon))
         playerState = PLAYER_STATE_PAUSED
+        stopPlaybackTimeRefreshing()
+    }
+
+    private fun startPlaybackTimeRefreshing() {
+        handler.postDelayed(playerTimerRunnable, PLAYER_PLAYBACK_REFRESH_DELAY)
+    }
+
+    private fun stopPlaybackTimeRefreshing() {
+        handler.removeCallbacks(playerTimerRunnable)
+    }
+
+    private fun refreshPlaybackTime() {
+        val time = SimpleDateFormat("mm:ss", Locale.getDefault()).format(player.currentPosition)
+        playbackTimeTextView.text = time
+        startPlaybackTimeRefreshing()
+    }
+
+    private fun resetPlaybackTime() {
+        playbackTimeTextView.text = getString(R.string.default_audio_playback_time)
     }
 }
