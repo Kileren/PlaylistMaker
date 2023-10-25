@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -13,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +32,8 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val SEARCH_VALUE = "SEARCH_VALUE"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     private val sharedPreferencesStorage by lazy { SharedPreferencesStorage(this) }
@@ -47,6 +52,11 @@ class SearchActivity : AppCompatActivity() {
     private val historyContainer: View by lazy { findViewById(R.id.history_container) }
     private val historyRecyclerView: RecyclerView by lazy { findViewById(R.id.history_recycler_view) }
     private val clearHistoryButton: Button by lazy { findViewById(R.id.clear_history_button) }
+    private val progressBar: ProgressBar by lazy { findViewById(R.id.progress_bar) }
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { search() }
+    private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +131,7 @@ class SearchActivity : AppCompatActivity() {
                 } else {
                     hideHistory()
                 }
+                searchDebounce()
             }
             override fun afterTextChanged(s: Editable?) {}
         }
@@ -130,7 +141,7 @@ class SearchActivity : AppCompatActivity() {
         return object: TextView.OnEditorActionListener {
             override fun onEditorAction(textView: TextView?, actionId: Int, keyEvent: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    search(searchEditText.text.toString())
+                    search()
                     return true
                 }
                 return false
@@ -138,15 +149,36 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun search(text: String) {
+    private fun search(text: String = searchEditText.text.toString()) {
+        if (text.isEmpty()) return
+
+        setProgressBarVisible(true)
         iTunesService.search(
             text = text,
-            onSuccess = { setTracks(it) },
+            onSuccess = {
+                setProgressBarVisible(false)
+                setTracks(it)
+            },
             onError = {
+                setProgressBarVisible(false)
                 configureRefreshButton(text)
                 showNetworkError()
             }
         )
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (current) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 
     private fun setTracks(tracks: List<Track>) {
@@ -163,6 +195,17 @@ class SearchActivity : AppCompatActivity() {
         hideHistory()
     }
 
+    private fun setProgressBarVisible(visible: Boolean) {
+        if (visible) {
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            exceptionContainer.visibility = View.GONE
+        } else {
+            progressBar.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
+    }
+
     private fun showNetworkError() {
         searchAdapter.update(listOf())
         exceptionContainer.visibility = View.VISIBLE
@@ -174,6 +217,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistoryIfNeeded() {
+        setProgressBarVisible(false)
         val tracks = sharedPreferencesStorage.searchHistory
         if (tracks.isEmpty()) return
         historyContainer.visibility = View.VISIBLE
@@ -198,6 +242,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun onTrackTap(track: Track) {
+        if (!clickDebounce()) return
+
         val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
         audioPlayer.putExtra(AudioPlayerActivity.trackKey, Gson().toJson(track))
         startActivity(audioPlayer)
