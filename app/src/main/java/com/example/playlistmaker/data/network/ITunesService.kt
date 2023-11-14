@@ -61,7 +61,6 @@ class ITunesService {
             trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(dto.trackTimeMillis),
             releaseDate = dto.releaseDate,
             previewUrl = dto.previewUrl,
-            trackTimeMillis = dto.trackTimeMillis,
             genreName = dto.genreName,
             albumName = dto.albumName
         )

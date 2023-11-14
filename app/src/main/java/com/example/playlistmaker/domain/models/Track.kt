@@ -9,7 +9,6 @@ data class Track(
     val trackTime: String,
     val releaseDate: String?,
     val previewUrl: String?,
-    val trackTimeMillis: Long,
     val genreName: String,
     val albumName: String?,
 )

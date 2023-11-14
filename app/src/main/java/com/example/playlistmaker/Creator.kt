@@ -8,12 +8,13 @@ import com.example.playlistmaker.domain.api.Player
 import com.example.playlistmaker.domain.api.SearchHistoryStorage
 import com.example.playlistmaker.domain.impl.AudioPlayerInteractorImpl
 import com.example.playlistmaker.presentation.api.AudioPlayer
-import com.example.playlistmaker.presentation.presenters.AudioPlayerPresenter
+import com.example.playlistmaker.presentation.api.AudioPlayerPresenter
+import com.example.playlistmaker.presentation.presenters.AudioPlayerPresenterImpl
 
 object Creator {
 
     fun createAudioPlayerPresenter(context: Context, audioPlayer: AudioPlayer): AudioPlayerPresenter {
-        return AudioPlayerPresenter(
+        return AudioPlayerPresenterImpl(
             audioPlayer = audioPlayer,
             audioPlayerInteractor = createAudioPlayerInteractor(context)
         )

@@ -10,14 +10,15 @@ import com.example.playlistmaker.domain.api.Player
 import com.example.playlistmaker.domain.impl.PlayerState
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.api.AudioPlayer
+import com.example.playlistmaker.presentation.api.AudioPlayerPresenter
 import com.example.playlistmaker.presentation.mappers.TrackMapper
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AudioPlayerPresenter(
+class AudioPlayerPresenterImpl(
     private val audioPlayer: AudioPlayer,
     private val audioPlayerInteractor: AudioPlayerInteractor
-): AudioPlayerInteractor.AudioPlayerConsumer, Player.StateListener {
+): AudioPlayerPresenter, AudioPlayerInteractor.AudioPlayerConsumer, Player.StateListener {
 
     companion object {
         private const val PLAYER_PLAYBACK_REFRESH_DELAY = 300L
@@ -27,7 +28,7 @@ class AudioPlayerPresenter(
     private var playerTimerRunnable = Runnable { refreshPlaybackTime() }
     private val playbackTimeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
 
-    fun onCreate(intent: Intent, context: Context) {
+    override fun onCreate(intent: Intent, context: Context) {
         val trackID = intent.getStringExtra(AudioPlayer.trackKey)
         if (trackID == null) {
             assert(false) { "Track ID should be passed" }
@@ -42,13 +43,13 @@ class AudioPlayerPresenter(
         audioPlayerInteractor.loadTrack(trackID, this)
     }
 
-    fun onPause() {
+    override fun onPause() {
         if (audioPlayerInteractor.currentPlayerState == PlayerState.PLAYING) {
             audioPlayerInteractor.pausePlayer()
         }
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
         audioPlayerInteractor.releasePlayer()
         stopPlaybackTimeRefreshing()
     }
@@ -66,7 +67,7 @@ class AudioPlayerPresenter(
         }
     }
 
-    fun playButtonTapped() {
+    override fun playButtonTapped() {
         when (audioPlayerInteractor.currentPlayerState) {
             PlayerState.PLAYING -> {
                 audioPlayerInteractor.pausePlayer()
