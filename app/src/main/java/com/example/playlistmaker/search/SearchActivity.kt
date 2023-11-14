@@ -26,8 +26,6 @@ import com.example.playlistmaker.data.storage.SearchHistoryStorageImpl
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.data.network.ITunesService
 import com.example.playlistmaker.presentation.api.AudioPlayer
-import java.text.SimpleDateFormat
-import java.util.*
 
 class SearchActivity : AppCompatActivity() {
 
