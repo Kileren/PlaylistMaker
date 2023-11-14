@@ -20,13 +20,14 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.AudioPlayerActivity
+import com.example.playlistmaker.presentation.ui.audio_player.AudioPlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.models.Track
+import com.example.playlistmaker.data.storage.SearchHistoryStorageImpl
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.network.services.ITunesService
-import com.example.playlistmaker.storage.SharedPreferencesStorage
-import com.example.playlistmaker.storage.addTrackToHistory
-import com.google.gson.Gson
+import com.example.playlistmaker.presentation.api.AudioPlayer
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SearchActivity : AppCompatActivity() {
 
@@ -36,7 +37,7 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private val sharedPreferencesStorage by lazy { SharedPreferencesStorage(this) }
+    private val searchHistoryStorage by lazy { SearchHistoryStorageImpl(this) }
     private val iTunesService by lazy { ITunesService() }
     private val searchAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
     private val historyAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
@@ -104,7 +105,7 @@ class SearchActivity : AppCompatActivity() {
             searchAdapter.update(listOf())
         }
         clearHistoryButton.setOnClickListener {
-            sharedPreferencesStorage.searchHistory = arrayOf()
+            searchHistoryStorage.searchHistory = arrayOf()
             hideHistory()
         }
     }
@@ -157,7 +158,23 @@ class SearchActivity : AppCompatActivity() {
             text = text,
             onSuccess = {
                 setProgressBarVisible(false)
-                setTracks(it)
+                // TODO: (s.bogachev) Rework
+                val tracks = it.map { dto ->
+                    Track(
+                        trackId = dto.trackId,
+                        trackName = dto.trackName,
+                        artistName = dto.artistName,
+                        artworkUrl100 = dto.artworkUrl100,
+                        country = dto.country,
+                        trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(dto.trackTimeMillis),
+                        releaseDate = dto.releaseDate,
+                        previewUrl = dto.previewUrl,
+                        trackTimeMillis = dto.trackTimeMillis,
+                        genreName = dto.genreName,
+                        albumName = dto.albumName
+                    )
+                }
+                setTracks(tracks)
             },
             onError = {
                 setProgressBarVisible(false)
@@ -218,7 +235,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showHistoryIfNeeded() {
         setProgressBarVisible(false)
-        val tracks = sharedPreferencesStorage.searchHistory
+        val tracks = searchHistoryStorage.searchHistory
         if (tracks.isEmpty()) return
         historyContainer.visibility = View.VISIBLE
         exceptionContainer.visibility = View.GONE
@@ -231,7 +248,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun updateHistoryListIfNeeded() {
         if (historyContainer.visibility == View.VISIBLE) {
-            historyAdapter.update(sharedPreferencesStorage.searchHistory.toList())
+            historyAdapter.update(searchHistoryStorage.searchHistory.toList())
         }
     }
 
@@ -244,11 +261,11 @@ class SearchActivity : AppCompatActivity() {
     private fun onTrackTap(track: Track) {
         if (!clickDebounce()) return
 
-        val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
-        audioPlayer.putExtra(AudioPlayerActivity.trackKey, Gson().toJson(track))
-        startActivity(audioPlayer)
-
-        sharedPreferencesStorage.addTrackToHistory(track)
+        searchHistoryStorage.addTrackToHistory(track)
         updateHistoryListIfNeeded()
+
+        val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
+        audioPlayer.putExtra(AudioPlayer.trackKey, track.trackId)
+        startActivity(audioPlayer)
     }
 }

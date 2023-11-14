@@ -1,6 +1,6 @@
 package com.example.playlistmaker.network.services
 
-import com.example.playlistmaker.models.Track
+import com.example.playlistmaker.data.dto.TrackDto
 import com.example.playlistmaker.network.Endpoint
 import com.example.playlistmaker.network.api.ITunesApi
 import com.example.playlistmaker.network.responses.ITunesSearchResponse
@@ -23,7 +23,7 @@ class ITunesService {
 
     fun search(
         text: String,
-        onSuccess: (List<Track>) -> Unit,
+        onSuccess: (List<TrackDto>) -> Unit,
         onError: () -> Unit
     ) {
         service.search(text).enqueue(object : Callback<ITunesSearchResponse> {
