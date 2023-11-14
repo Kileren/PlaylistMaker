@@ -1,9 +1,8 @@
-package com.example.playlistmaker.network.services
+package com.example.playlistmaker.data.network
 
 import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.network.Endpoint
-import com.example.playlistmaker.network.api.ITunesApi
-import com.example.playlistmaker.network.responses.ITunesSearchResponse
+import com.example.playlistmaker.data.Endpoint
+import com.example.playlistmaker.data.dto.ITunesSearchResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -1,6 +1,5 @@
-package com.example.playlistmaker.network.responses
+package com.example.playlistmaker.data.dto
 
-import com.example.playlistmaker.data.dto.TrackDto
 import com.google.gson.annotations.SerializedName
 
 data class ITunesSearchResponse(
