@@ -158,23 +158,7 @@ class SearchActivity : AppCompatActivity() {
             text = text,
             onSuccess = {
                 setProgressBarVisible(false)
-                // TODO: (s.bogachev) Rework
-                val tracks = it.map { dto ->
-                    Track(
-                        trackId = dto.trackId,
-                        trackName = dto.trackName,
-                        artistName = dto.artistName,
-                        artworkUrl100 = dto.artworkUrl100,
-                        country = dto.country,
-                        trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(dto.trackTimeMillis),
-                        releaseDate = dto.releaseDate,
-                        previewUrl = dto.previewUrl,
-                        trackTimeMillis = dto.trackTimeMillis,
-                        genreName = dto.genreName,
-                        albumName = dto.albumName
-                    )
-                }
-                setTracks(tracks)
+                setTracks(it)
             },
             onError = {
                 setProgressBarVisible(false)
