@@ -1,14 +1,16 @@
-package com.example.playlistmaker.network.services
+package com.example.playlistmaker.data.network
 
-import com.example.playlistmaker.models.Track
-import com.example.playlistmaker.network.Endpoint
-import com.example.playlistmaker.network.api.ITunesApi
-import com.example.playlistmaker.network.responses.ITunesSearchResponse
+import com.example.playlistmaker.data.dto.TrackDto
+import com.example.playlistmaker.data.Endpoint
+import com.example.playlistmaker.data.dto.ITunesSearchResponse
+import com.example.playlistmaker.domain.models.Track
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ITunesService {
 
@@ -33,7 +35,7 @@ class ITunesService {
             ) {
                 when (response.code()) {
                     200 -> {
-                        val songs = response.body()?.tracks
+                        val songs = response.body()?.tracks?.map { map(it) }
                         onSuccess(songs ?: listOf())
                     }
                     else -> {
@@ -46,5 +48,20 @@ class ITunesService {
                 onError()
             }
         })
+    }
+
+    private fun map(dto: TrackDto): Track {
+        return Track(
+            trackId = dto.trackId,
+            trackName = dto.trackName,
+            artistName = dto.artistName,
+            artworkUrl100 = dto.artworkUrl100,
+            country = dto.country,
+            trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(dto.trackTimeMillis),
+            releaseDate = dto.releaseDate,
+            previewUrl = dto.previewUrl,
+            genreName = dto.genreName,
+            albumName = dto.albumName
+        )
     }
 }

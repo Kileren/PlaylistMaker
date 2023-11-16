@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.models.Track
+import com.example.playlistmaker.domain.models.Track
 
 class SearchViewHolder(parentView: ViewGroup): RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
@@ -31,6 +31,6 @@ class SearchViewHolder(parentView: ViewGroup): RecyclerView.ViewHolder(
 
         songTextView.text = model.trackName
         artistTextView.text = model.artistName
-        durationTextView.text = model.trackTime()
+        durationTextView.text = model.trackTime
     }
 }
