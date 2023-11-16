@@ -27,9 +27,7 @@ object Creator {
         )
     }
 
-    private fun createPlayer(): Player {
-        return PlayerImpl()
-    }
+    private fun createPlayer(): Player = PlayerImpl()
 
     private fun createSearchHistoryStorage(context: Context): SearchHistoryStorage {
         return SearchHistoryStorageImpl(context)

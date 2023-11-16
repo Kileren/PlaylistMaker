@@ -35,8 +35,7 @@ class ITunesService {
             ) {
                 when (response.code()) {
                     200 -> {
-                        val dtoSongs = response.body()?.tracks
-                        val songs = dtoSongs?.map { map(it) }
+                        val songs = response.body()?.tracks?.map { map(it) }
                         onSuccess(songs ?: listOf())
                     }
                     else -> {
