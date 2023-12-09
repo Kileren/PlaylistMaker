@@ -12,13 +12,11 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        switchTheme(darkThemeEnabled())
+        switchTheme()
     }
 
-    fun darkThemeEnabled() = sharedPreferencesStorage.darkTheme
-
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        sharedPreferencesStorage.darkTheme = darkThemeEnabled
+    private fun switchTheme() {
+        val darkThemeEnabled = sharedPreferencesStorage.darkTheme
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
                 AppCompatDelegate.MODE_NIGHT_YES

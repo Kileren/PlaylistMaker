@@ -3,6 +3,7 @@ package com.example.playlistmaker.creator
 import android.content.Context
 import com.example.playlistmaker.data.PlayerImpl
 import com.example.playlistmaker.data.storage.SearchHistoryStorageImpl
+import com.example.playlistmaker.data.storage.SharedPreferencesStorage
 import com.example.playlistmaker.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.domain.api.Player
 import com.example.playlistmaker.domain.api.SearchHistoryStorage
@@ -10,6 +11,14 @@ import com.example.playlistmaker.domain.impl.AudioPlayerInteractorImpl
 import com.example.playlistmaker.presentation.api.AudioPlayer
 import com.example.playlistmaker.presentation.api.AudioPlayerPresenter
 import com.example.playlistmaker.presentation.presenters.AudioPlayerPresenterImpl
+import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
+import com.example.playlistmaker.settings.domain.SettingsInteractor
+import com.example.playlistmaker.settings.domain.SettingsInteractorImpl
+import com.example.playlistmaker.settings.domain.SettingsRepository
+import com.example.playlistmaker.sharing.data.ExternalNavigator
+import com.example.playlistmaker.sharing.data.ExternalNavigatorImpl
+import com.example.playlistmaker.sharing.domain.SharingInteractor
+import com.example.playlistmaker.sharing.domain.SharingInteractorImpl
 
 object Creator {
 
@@ -31,5 +40,35 @@ object Creator {
 
     private fun createSearchHistoryStorage(context: Context): SearchHistoryStorage {
         return SearchHistoryStorageImpl(context)
+    }
+
+    // Shared
+
+    private fun createSharedPreferencesStorage(context: Context): SharedPreferencesStorage {
+        return SharedPreferencesStorage(context)
+    }
+
+    private fun createExternalNavigator(context: Context): ExternalNavigator {
+        return ExternalNavigatorImpl(context)
+    }
+
+    fun createSharingInteractor(context: Context): SharingInteractor {
+        return SharingInteractorImpl(
+            externalNavigator = createExternalNavigator(context)
+        )
+    }
+
+    // Settings
+
+    private fun createSettingsRepository(context: Context): SettingsRepository {
+        return SettingsRepositoryImpl(
+            prefs = createSharedPreferencesStorage(context)
+        )
+    }
+
+    fun createSettingsInteractor(context: Context): SettingsInteractor {
+        return SettingsInteractorImpl(
+            repository = createSettingsRepository(context)
+        )
     }
 }
