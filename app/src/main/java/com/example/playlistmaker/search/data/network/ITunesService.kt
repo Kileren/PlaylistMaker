@@ -1,8 +1,7 @@
-package com.example.playlistmaker.data.network
+package com.example.playlistmaker.search.data.network
 
-import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.data.Endpoint
-import com.example.playlistmaker.data.dto.ITunesSearchResponse
+import com.example.playlistmaker.search.data.dto.TrackDto
+import com.example.playlistmaker.search.data.dto.ITunesSearchResponse
 import com.example.playlistmaker.domain.models.Track
 import retrofit2.Call
 import retrofit2.Callback

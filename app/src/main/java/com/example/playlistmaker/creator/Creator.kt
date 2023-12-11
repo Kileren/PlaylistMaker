@@ -2,9 +2,9 @@ package com.example.playlistmaker.creator
 
 import android.content.Context
 import com.example.playlistmaker.data.PlayerImpl
-import com.example.playlistmaker.data.network.ITunesService
+import com.example.playlistmaker.search.data.network.ITunesService
 import com.example.playlistmaker.search.data.SearchHistoryStorageImpl
-import com.example.playlistmaker.data.storage.SharedPreferencesStorage
+import com.example.playlistmaker.search.data.SharedPreferencesStorage
 import com.example.playlistmaker.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.domain.api.Player
 import com.example.playlistmaker.search.domain.SearchHistoryStorage

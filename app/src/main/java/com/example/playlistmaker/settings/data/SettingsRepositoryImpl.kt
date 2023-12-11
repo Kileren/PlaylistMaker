@@ -1,6 +1,6 @@
 package com.example.playlistmaker.settings.data
 
-import com.example.playlistmaker.data.storage.SharedPreferencesStorage
+import com.example.playlistmaker.search.data.SharedPreferencesStorage
 import com.example.playlistmaker.settings.domain.SettingsRepository
 
 class SettingsRepositoryImpl(

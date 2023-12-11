@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.storage
+package com.example.playlistmaker.search.data
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
