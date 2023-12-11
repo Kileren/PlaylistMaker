@@ -1,8 +1,6 @@
-package com.example.playlistmaker.search
+package com.example.playlistmaker.search.ui
 
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,32 +9,27 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.presentation.ui.audio_player.AudioPlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.storage.SearchHistoryStorageImpl
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.data.network.ITunesService
 import com.example.playlistmaker.presentation.api.AudioPlayer
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : ComponentActivity() {
 
-    companion object {
-        private const val SEARCH_VALUE = "SEARCH_VALUE"
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-    }
+    private lateinit var viewModel: SearchViewModel
 
-    private val searchHistoryStorage by lazy { SearchHistoryStorageImpl(this) }
-    private val iTunesService by lazy { ITunesService() }
     private val searchAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
     private val historyAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
 
@@ -54,28 +47,31 @@ class SearchActivity : AppCompatActivity() {
     private val progressBar: ProgressBar by lazy { findViewById(R.id.progress_bar) }
 
     private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { search() }
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         configureViews()
+        viewModel = ViewModelProvider(
+            this,
+            SearchViewModel.getViewModelFactory(
+                Creator.createSearchInteractor(this)
+            )
+        ).get()
+
+        setObservers()
         setListeners()
         setupUI()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_VALUE, searchEditText.text.toString())
+        viewModel.onSaveInstanceState(outState, searchEditText.text.toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        val searchText = savedInstanceState.getString(SEARCH_VALUE)
-        if (searchText != null) {
-            searchEditText.setText(searchText)
-            searchEditText.setSelection(searchText.length)
-        }
+        viewModel.onRestoreInstanceState(savedInstanceState)
     }
 
     private fun configureViews() {
@@ -84,27 +80,34 @@ class SearchActivity : AppCompatActivity() {
         historyContainer.visibility = View.GONE
     }
 
+    private fun setObservers() {
+        viewModel.getSearchFieldText().observe(this) {
+            searchEditText.setText(it)
+            searchEditText.setSelection(it.length)
+        }
+        viewModel.getState().observe(this) { state ->
+            when (state) {
+                SearchState.Loading -> setProgressBarVisible(true)
+                is SearchState.Error -> showNetworkError(state)
+                is SearchState.History -> showHistory(state)
+                is SearchState.Result -> showTracks(state)
+                null -> hideHistory()
+            }
+        }
+    }
+
     private fun setListeners() {
         backButton.setOnClickListener { finish() }
         searchEditText.addTextChangedListener(makeSearchTextWatcher())
         searchEditText.setOnEditorActionListener(makeSearchEditorActionListener())
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchEditText.text.isEmpty()) {
-                showHistoryIfNeeded()
-            } else {
-                hideHistory()
-            }
+            viewModel.onFocusChanged(searchEditText.text.toString(), hasFocus)
         }
         clearImage.setOnClickListener {
-            searchEditText.text = null
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(searchEditText.windowToken, 0)
-            searchEditText.clearFocus()
-            searchAdapter.update(listOf())
+            viewModel.tapOnClearTextButton()
         }
         clearHistoryButton.setOnClickListener {
-            searchHistoryStorage.searchHistory = arrayOf()
-            hideHistory()
+            viewModel.tapOnClearHistoryButton()
         }
     }
 
@@ -125,50 +128,26 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearImage.isVisible = !s.isNullOrEmpty()
-                if (searchEditText.hasFocus() && s?.isEmpty() == true) {
-                    showHistoryIfNeeded()
-                } else {
-                    hideHistory()
-                }
-                searchDebounce()
+                viewModel.onSearchTextChanged(s.toString(), searchEditText.hasFocus())
             }
             override fun afterTextChanged(s: Editable?) {}
         }
     }
 
     private fun makeSearchEditorActionListener(): TextView.OnEditorActionListener {
-        return object: TextView.OnEditorActionListener {
-            override fun onEditorAction(textView: TextView?, actionId: Int, keyEvent: KeyEvent?): Boolean {
+        return object : TextView.OnEditorActionListener {
+            override fun onEditorAction(
+                textView: TextView?,
+                actionId: Int,
+                keyEvent: KeyEvent?
+            ): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    search()
+                    viewModel.tapOnSearchButton()
                     return true
                 }
                 return false
             }
         }
-    }
-
-    private fun search(text: String = searchEditText.text.toString()) {
-        if (text.isEmpty()) return
-
-        setProgressBarVisible(true)
-        iTunesService.search(
-            text = text,
-            onSuccess = {
-                setProgressBarVisible(false)
-                setTracks(it)
-            },
-            onError = {
-                setProgressBarVisible(false)
-                configureRefreshButton(text)
-                showNetworkError()
-            }
-        )
-    }
-
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun clickDebounce(): Boolean {
@@ -205,7 +184,15 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showNetworkError() {
+    private fun showTracks(state: SearchState.Result) {
+        setProgressBarVisible(false)
+        setTracks(state.tracks)
+    }
+
+    private fun showNetworkError(state: SearchState.Error) {
+        setProgressBarVisible(false)
+        configureRefreshButton(state.text)
+
         searchAdapter.update(listOf())
         exceptionContainer.visibility = View.VISIBLE
         exceptionRefreshButton.visibility = View.VISIBLE
@@ -215,39 +202,45 @@ class SearchActivity : AppCompatActivity() {
         exceptionTextView.text = getString(R.string.search_connection_error)
     }
 
-    private fun showHistoryIfNeeded() {
+    private fun showHistory(history: SearchState.History) {
         setProgressBarVisible(false)
-        val tracks = searchHistoryStorage.searchHistory
+        searchAdapter.update(listOf())
+
+        val tracks = history.tracks
         if (tracks.isEmpty()) return
         historyContainer.visibility = View.VISIBLE
         exceptionContainer.visibility = View.GONE
-        updateHistoryListIfNeeded()
+        updateHistoryListIfNeeded(tracks)
     }
 
     private fun hideHistory() {
         historyContainer.visibility = View.GONE
     }
 
-    private fun updateHistoryListIfNeeded() {
+    private fun updateHistoryListIfNeeded(tracks: Array<Track>) {
         if (historyContainer.visibility == View.VISIBLE) {
-            historyAdapter.update(searchHistoryStorage.searchHistory.toList())
+            historyAdapter.update(tracks.toList())
         }
     }
 
+
     private fun configureRefreshButton(searchText: String) {
         exceptionRefreshButton.setOnClickListener {
-            search(searchText)
+            viewModel.tapRefreshButton(searchText)
         }
     }
 
     private fun onTrackTap(track: Track) {
         if (!clickDebounce()) return
 
-        searchHistoryStorage.addTrackToHistory(track)
-        updateHistoryListIfNeeded()
+        viewModel.tapOnTrack(track)
 
         val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
         audioPlayer.putExtra(AudioPlayer.trackKey, track.trackId)
         startActivity(audioPlayer)
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }

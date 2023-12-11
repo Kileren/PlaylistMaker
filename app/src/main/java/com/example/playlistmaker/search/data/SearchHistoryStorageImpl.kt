@@ -1,8 +1,8 @@
-package com.example.playlistmaker.data.storage
+package com.example.playlistmaker.search.data
 
 import android.content.Context
 import androidx.core.content.edit
-import com.example.playlistmaker.domain.api.SearchHistoryStorage
+import com.example.playlistmaker.search.domain.SearchHistoryStorage
 import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 

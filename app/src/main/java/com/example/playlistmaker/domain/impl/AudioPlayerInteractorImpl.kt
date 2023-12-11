@@ -2,7 +2,7 @@ package com.example.playlistmaker.domain.impl
 
 import com.example.playlistmaker.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.domain.api.Player
-import com.example.playlistmaker.domain.api.SearchHistoryStorage
+import com.example.playlistmaker.search.domain.SearchHistoryStorage
 
 class AudioPlayerInteractorImpl(
     val player: Player,

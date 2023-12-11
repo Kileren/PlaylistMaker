@@ -2,15 +2,20 @@ package com.example.playlistmaker.creator
 
 import android.content.Context
 import com.example.playlistmaker.data.PlayerImpl
-import com.example.playlistmaker.data.storage.SearchHistoryStorageImpl
+import com.example.playlistmaker.data.network.ITunesService
+import com.example.playlistmaker.search.data.SearchHistoryStorageImpl
 import com.example.playlistmaker.data.storage.SharedPreferencesStorage
 import com.example.playlistmaker.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.domain.api.Player
-import com.example.playlistmaker.domain.api.SearchHistoryStorage
+import com.example.playlistmaker.search.domain.SearchHistoryStorage
 import com.example.playlistmaker.domain.impl.AudioPlayerInteractorImpl
 import com.example.playlistmaker.presentation.api.AudioPlayer
 import com.example.playlistmaker.presentation.api.AudioPlayerPresenter
 import com.example.playlistmaker.presentation.presenters.AudioPlayerPresenterImpl
+import com.example.playlistmaker.search.data.SearchRepositoryImpl
+import com.example.playlistmaker.search.domain.SearchInteractor
+import com.example.playlistmaker.search.domain.SearchInteractorImpl
+import com.example.playlistmaker.search.domain.SearchRepository
 import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.settings.domain.SettingsInteractorImpl
@@ -44,6 +49,10 @@ object Creator {
 
     // Shared
 
+    private fun createITunesService(): ITunesService {
+        return ITunesService()
+    }
+
     private fun createSharedPreferencesStorage(context: Context): SharedPreferencesStorage {
         return SharedPreferencesStorage(context)
     }
@@ -55,6 +64,21 @@ object Creator {
     fun createSharingInteractor(context: Context): SharingInteractor {
         return SharingInteractorImpl(
             externalNavigator = createExternalNavigator(context)
+        )
+    }
+
+    // Search
+
+    private fun createSearchRepository(): SearchRepository {
+        return SearchRepositoryImpl(
+            iTunesService = createITunesService()
+        )
+    }
+
+    fun createSearchInteractor(context: Context): SearchInteractor {
+        return SearchInteractorImpl(
+            searchRepository = createSearchRepository(),
+            searchHistoryStorage = createSearchHistoryStorage(context)
         )
     }
 
