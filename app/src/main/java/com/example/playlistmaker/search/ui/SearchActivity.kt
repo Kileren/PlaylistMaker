@@ -9,49 +9,36 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.presentation.ui.audio_player.AudioPlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.api.AudioPlayer
 
 class SearchActivity : ComponentActivity() {
 
     private lateinit var viewModel: SearchViewModel
+    private lateinit var binding: ActivitySearchBinding
 
     private val searchAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
     private val historyAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
-
-    private val backButton: ImageView by lazy { findViewById(R.id.back_button) }
-    private val searchEditText: EditText by lazy { findViewById(R.id.search_text_field) }
-    private val clearImage: ImageView by lazy { findViewById(R.id.clear_image_view) }
-    private val recyclerView: RecyclerView by lazy { findViewById(R.id.recycler_view) }
-    private val exceptionContainer: View by lazy { findViewById(R.id.exception_container) }
-    private val exceptionIcon: ImageView by lazy { findViewById(R.id.exception_image_view) }
-    private val exceptionTextView: TextView by lazy { findViewById(R.id.exception_text_view) }
-    private val exceptionRefreshButton: Button by lazy { findViewById(R.id.refresh_button) }
-    private val historyContainer: View by lazy { findViewById(R.id.history_container) }
-    private val historyRecyclerView: RecyclerView by lazy { findViewById(R.id.history_recycler_view) }
-    private val clearHistoryButton: Button by lazy { findViewById(R.id.clear_history_button) }
-    private val progressBar: ProgressBar by lazy { findViewById(R.id.progress_bar) }
 
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding = ActivitySearchBinding.inflate(layoutInflater)
         configureViews()
+
         viewModel = ViewModelProvider(
             this,
             SearchViewModel.getViewModelFactory(
@@ -66,7 +53,7 @@ class SearchActivity : ComponentActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModel.onSaveInstanceState(outState, searchEditText.text.toString())
+        viewModel.onSaveInstanceState(outState, binding.searchTextField.text.toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -75,15 +62,15 @@ class SearchActivity : ComponentActivity() {
     }
 
     private fun configureViews() {
-        setContentView(R.layout.activity_search)
-        exceptionContainer.visibility = View.GONE
-        historyContainer.visibility = View.GONE
+        setContentView(binding.root)
+        binding.exceptionContainer.visibility = View.GONE
+        binding.historyContainer.visibility = View.GONE
     }
 
     private fun setObservers() {
         viewModel.getSearchFieldText().observe(this) {
-            searchEditText.setText(it)
-            searchEditText.setSelection(it.length)
+            binding.searchTextField.setText(it)
+            binding.searchTextField.setSelection(it.length)
         }
         viewModel.getState().observe(this) { state ->
             when (state) {
@@ -97,38 +84,38 @@ class SearchActivity : ComponentActivity() {
     }
 
     private fun setListeners() {
-        backButton.setOnClickListener { finish() }
-        searchEditText.addTextChangedListener(makeSearchTextWatcher())
-        searchEditText.setOnEditorActionListener(makeSearchEditorActionListener())
-        searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            viewModel.onFocusChanged(searchEditText.text.toString(), hasFocus)
+        binding.backButton.setOnClickListener { finish() }
+        binding.searchTextField.addTextChangedListener(makeSearchTextWatcher())
+        binding.searchTextField.setOnEditorActionListener(makeSearchEditorActionListener())
+        binding.searchTextField.setOnFocusChangeListener { _, hasFocus ->
+            viewModel.onFocusChanged(binding.searchTextField.text.toString(), hasFocus)
         }
-        clearImage.setOnClickListener {
+        binding.clearImageView.setOnClickListener {
             viewModel.tapOnClearTextButton()
         }
-        clearHistoryButton.setOnClickListener {
+        binding.clearHistoryButton.setOnClickListener {
             viewModel.tapOnClearHistoryButton()
         }
     }
 
     private fun setupUI() {
-        clearImage.isVisible = false
+        binding.clearImageView.isVisible = false
 
         // Recycler View
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = searchAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = searchAdapter
 
         // History Recycler View
-        historyRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        historyRecyclerView.adapter = historyAdapter
+        binding.historyRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.historyRecyclerView.adapter = historyAdapter
     }
 
     private fun makeSearchTextWatcher(): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearImage.isVisible = !s.isNullOrEmpty()
-                viewModel.onSearchTextChanged(s.toString(), searchEditText.hasFocus())
+                binding.clearImageView.isVisible = !s.isNullOrEmpty()
+                viewModel.onSearchTextChanged(s.toString(), binding.searchTextField.hasFocus())
             }
             override fun afterTextChanged(s: Editable?) {}
         }
@@ -162,25 +149,25 @@ class SearchActivity : ComponentActivity() {
     private fun setTracks(tracks: List<Track>) {
         searchAdapter.update(tracks)
         if (tracks.isEmpty()) {
-            exceptionContainer.visibility = View.VISIBLE
-            exceptionRefreshButton.visibility = View.GONE
+            binding.exceptionContainer.visibility = View.VISIBLE
+            binding.refreshButton.visibility = View.GONE
 
-            exceptionIcon.setImageDrawable(getDrawable(R.drawable.empty_search_icon))
-            exceptionTextView.text = getString(R.string.empty_search_text)
+            binding.exceptionImageView.setImageDrawable(getDrawable(R.drawable.empty_search_icon))
+            binding.exceptionTextView.text = getString(R.string.empty_search_text)
         } else {
-            exceptionContainer.visibility = View.GONE
+            binding.exceptionContainer.visibility = View.GONE
         }
         hideHistory()
     }
 
     private fun setProgressBarVisible(visible: Boolean) {
         if (visible) {
-            progressBar.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
-            exceptionContainer.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
+            binding.exceptionContainer.visibility = View.GONE
         } else {
-            progressBar.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
         }
     }
 
@@ -194,12 +181,12 @@ class SearchActivity : ComponentActivity() {
         configureRefreshButton(state.text)
 
         searchAdapter.update(listOf())
-        exceptionContainer.visibility = View.VISIBLE
-        exceptionRefreshButton.visibility = View.VISIBLE
+        binding.exceptionContainer.visibility = View.VISIBLE
+        binding.refreshButton.visibility = View.VISIBLE
         hideHistory()
 
-        exceptionIcon.setImageDrawable(getDrawable(R.drawable.error_search_icon))
-        exceptionTextView.text = getString(R.string.search_connection_error)
+        binding.exceptionImageView.setImageDrawable(getDrawable(R.drawable.error_search_icon))
+        binding.exceptionTextView.text = getString(R.string.search_connection_error)
     }
 
     private fun showHistory(history: SearchState.History) {
@@ -208,24 +195,24 @@ class SearchActivity : ComponentActivity() {
 
         val tracks = history.tracks
         if (tracks.isEmpty()) return
-        historyContainer.visibility = View.VISIBLE
-        exceptionContainer.visibility = View.GONE
+        binding.historyContainer.visibility = View.VISIBLE
+        binding.exceptionContainer.visibility = View.GONE
         updateHistoryListIfNeeded(tracks)
     }
 
     private fun hideHistory() {
-        historyContainer.visibility = View.GONE
+        binding.historyContainer.visibility = View.GONE
     }
 
     private fun updateHistoryListIfNeeded(tracks: Array<Track>) {
-        if (historyContainer.visibility == View.VISIBLE) {
+        if (binding.historyContainer.visibility == View.VISIBLE) {
             historyAdapter.update(tracks.toList())
         }
     }
 
 
     private fun configureRefreshButton(searchText: String) {
-        exceptionRefreshButton.setOnClickListener {
+        binding.refreshButton.setOnClickListener {
             viewModel.tapRefreshButton(searchText)
         }
     }
