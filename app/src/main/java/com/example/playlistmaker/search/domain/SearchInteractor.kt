@@ -1,7 +1,5 @@
 package com.example.playlistmaker.search.domain
 
-import com.example.playlistmaker.domain.models.Track
-
 interface SearchInteractor {
     fun getSearchHistory(): Array<Track>
     fun clearSearchHistory()

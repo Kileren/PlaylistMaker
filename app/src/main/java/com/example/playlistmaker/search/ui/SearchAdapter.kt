@@ -2,7 +2,7 @@ package com.example.playlistmaker.search.ui
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.Track
 
 class SearchAdapter(
     private var data: List<Track>,

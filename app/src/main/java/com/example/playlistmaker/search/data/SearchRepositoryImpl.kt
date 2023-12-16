@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.data
 
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.data.network.ITunesService
 import com.example.playlistmaker.search.domain.SearchRepository
 

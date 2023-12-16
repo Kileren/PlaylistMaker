@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.api
+package com.example.playlistmaker.player.domain.api
 
-import com.example.playlistmaker.domain.impl.PlayerState
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.player.domain.impl.PlayerState
+import com.example.playlistmaker.search.domain.Track
 
 interface AudioPlayerInteractor {
 

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentation.ui.models
+package com.example.playlistmaker.player.ui
 
 data class TrackInfo(
     val trackId: String,

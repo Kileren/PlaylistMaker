@@ -1,23 +1,23 @@
-package com.example.playlistmaker.presentation.ui.audio_player
+package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.presentation.api.AudioPlayer
-import com.example.playlistmaker.presentation.ui.models.TrackInfo
 
-class AudioPlayerActivity: AppCompatActivity(), AudioPlayer {
+class AudioPlayerActivity: ComponentActivity() {
 
-    private val presenter = Creator.createAudioPlayerPresenter(this, this)
+    private lateinit var viewModel: AudioPlayerViewModel
 
     private val backButton: ImageView by lazy { findViewById(R.id.back_button) }
     private val imageView: ImageView by lazy { findViewById(R.id.poster_image_view) }
@@ -35,27 +35,49 @@ class AudioPlayerActivity: AppCompatActivity(), AudioPlayer {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
+
+        viewModel = ViewModelProvider(
+            this,
+            AudioPlayerViewModel.getViewModelFactory(
+                Creator.createAudioPlayerInteractor(this)
+            )
+        ).get()
+
         configureUI()
-        presenter.onCreate(intent, this)
+        setObservers()
+        viewModel.onCreate(intent, this)
     }
 
     override fun onPause() {
         super.onPause()
-        presenter.onPause()
+        viewModel.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.onDestroy()
+        viewModel.onDestroy()
     }
 
     private fun configureUI() {
         playButton.isEnabled = false
-        playButton.setOnClickListener { presenter.playButtonTapped() }
+        playButton.setOnClickListener { viewModel.playButtonTapped() }
         backButton.setOnClickListener { finish() }
     }
 
-    override fun configure(model: TrackInfo) {
+    private fun setObservers() {
+        viewModel.getTrackInfo().observe(this) {
+            configure(it)
+        }
+        viewModel.getAudioPlaybackModel().observe(this) {
+            updatePlaybackTime(it.playbackTime)
+            when (it.playButtonState) {
+                AudioPlayerPlayButtonState.PLAY -> showPlayButton()
+                AudioPlayerPlayButtonState.PAUSE -> showPauseButton()
+            }
+        }
+    }
+
+    private fun configure(model: TrackInfo) {
         val cornerRadius = resources.getDimensionPixelSize(R.dimen.s_corner_radius)
         Glide.with(this)
             .load(model.coverArtwork)
@@ -77,16 +99,20 @@ class AudioPlayerActivity: AppCompatActivity(), AudioPlayer {
         countryTextView.text = model.country
     }
 
-    override fun showPlayButton() {
+    private fun showPlayButton() {
         playButton.isEnabled = true
         playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.play_icon))
     }
 
-    override fun showPauseButton() {
+    private fun showPauseButton() {
         playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.pause_icon))
     }
 
-    override fun updatePlaybackTime(value: String) {
+    private fun updatePlaybackTime(value: String) {
         playbackTimeTextView.text = value
+    }
+
+    companion object {
+        const val trackKey = "audioPlayer.track"
     }
 }

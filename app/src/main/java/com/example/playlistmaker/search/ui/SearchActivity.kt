@@ -15,12 +15,11 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.presentation.ui.audio_player.AudioPlayerActivity
+import com.example.playlistmaker.player.ui.AudioPlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.api.AudioPlayer
+import com.example.playlistmaker.search.domain.Track
 
 class SearchActivity : ComponentActivity() {
 
@@ -223,7 +222,7 @@ class SearchActivity : ComponentActivity() {
         viewModel.tapOnTrack(track)
 
         val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
-        audioPlayer.putExtra(AudioPlayer.trackKey, track.trackId)
+        audioPlayer.putExtra(AudioPlayerActivity.trackKey, track.trackId)
         startActivity(audioPlayer)
     }
 

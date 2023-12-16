@@ -3,7 +3,7 @@ package com.example.playlistmaker.search.data
 import android.content.Context
 import androidx.core.content.edit
 import com.example.playlistmaker.search.domain.SearchHistoryStorage
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.Track
 import com.google.gson.Gson
 
 class SearchHistoryStorageImpl(private val context: Context): SearchHistoryStorage {

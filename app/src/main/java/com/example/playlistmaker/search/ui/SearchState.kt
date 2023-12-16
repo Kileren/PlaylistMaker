@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.ui
 
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.Track
 
 sealed class SearchState {
 

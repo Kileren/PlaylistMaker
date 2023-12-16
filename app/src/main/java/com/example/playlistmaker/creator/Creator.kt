@@ -1,17 +1,14 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
-import com.example.playlistmaker.data.PlayerImpl
+import com.example.playlistmaker.player.data.PlayerImpl
 import com.example.playlistmaker.search.data.network.ITunesService
 import com.example.playlistmaker.search.data.SearchHistoryStorageImpl
 import com.example.playlistmaker.search.data.SharedPreferencesStorage
-import com.example.playlistmaker.domain.api.AudioPlayerInteractor
-import com.example.playlistmaker.domain.api.Player
+import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
+import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.search.domain.SearchHistoryStorage
-import com.example.playlistmaker.domain.impl.AudioPlayerInteractorImpl
-import com.example.playlistmaker.presentation.api.AudioPlayer
-import com.example.playlistmaker.presentation.api.AudioPlayerPresenter
-import com.example.playlistmaker.presentation.presenters.AudioPlayerPresenterImpl
+import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
 import com.example.playlistmaker.search.data.SearchRepositoryImpl
 import com.example.playlistmaker.search.domain.SearchInteractor
 import com.example.playlistmaker.search.domain.SearchInteractorImpl
@@ -27,14 +24,7 @@ import com.example.playlistmaker.sharing.domain.SharingInteractorImpl
 
 object Creator {
 
-    fun createAudioPlayerPresenter(context: Context, audioPlayer: AudioPlayer): AudioPlayerPresenter {
-        return AudioPlayerPresenterImpl(
-            audioPlayer = audioPlayer,
-            audioPlayerInteractor = createAudioPlayerInteractor(context)
-        )
-    }
-
-    private fun createAudioPlayerInteractor(context: Context): AudioPlayerInteractor {
+    fun createAudioPlayerInteractor(context: Context): AudioPlayerInteractor {
         return AudioPlayerInteractorImpl(
             player = createPlayer(),
             searchHistoryStorage = createSearchHistoryStorage(context)

@@ -2,7 +2,7 @@ package com.example.playlistmaker.search.data.network
 
 import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.data.dto.ITunesSearchResponse
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.Track
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

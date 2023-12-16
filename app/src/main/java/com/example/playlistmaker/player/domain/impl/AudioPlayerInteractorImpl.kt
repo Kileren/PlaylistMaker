@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.player.domain.impl
 
-import com.example.playlistmaker.domain.api.AudioPlayerInteractor
-import com.example.playlistmaker.domain.api.Player
+import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
+import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.search.domain.SearchHistoryStorage
 
 class AudioPlayerInteractorImpl(

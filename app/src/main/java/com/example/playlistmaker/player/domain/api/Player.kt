@@ -1,6 +1,6 @@
-package com.example.playlistmaker.domain.api
+package com.example.playlistmaker.player.domain.api
 
-import com.example.playlistmaker.domain.impl.PlayerState
+import com.example.playlistmaker.player.domain.impl.PlayerState
 
 interface Player {
     var state: PlayerState
