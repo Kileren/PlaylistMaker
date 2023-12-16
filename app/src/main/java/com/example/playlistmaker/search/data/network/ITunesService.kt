@@ -34,7 +34,7 @@ class ITunesService {
             ) {
                 when (response.code()) {
                     200 -> {
-                        val songs = response.body()?.tracks?.map { map(it) }
+                        val songs = response.body()?.tracks?.mapNotNull { map(it) }
                         onSuccess(songs ?: listOf())
                     }
                     else -> {
@@ -49,18 +49,22 @@ class ITunesService {
         })
     }
 
-    private fun map(dto: TrackDto): Track {
-        return Track(
-            trackId = dto.trackId,
-            trackName = dto.trackName,
-            artistName = dto.artistName,
-            artworkUrl100 = dto.artworkUrl100,
-            country = dto.country,
-            trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(dto.trackTimeMillis),
-            releaseDate = dto.releaseDate,
-            previewUrl = dto.previewUrl,
-            genreName = dto.genreName,
-            albumName = dto.albumName
-        )
+    private fun map(dto: TrackDto): Track? {
+        if (dto.trackId != null && dto.trackName != null && dto.artistName != null) {
+            return Track(
+                trackId = dto.trackId,
+                trackName = dto.trackName,
+                artistName = dto.artistName,
+                artworkUrl100 = dto.artworkUrl100,
+                country = dto.country ?: "",
+                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(dto.trackTimeMillis),
+                releaseDate = dto.releaseDate,
+                previewUrl = dto.previewUrl,
+                genreName = dto.genreName ?: "",
+                albumName = dto.albumName
+            )
+        } else {
+            return null
+        }
     }
 }
