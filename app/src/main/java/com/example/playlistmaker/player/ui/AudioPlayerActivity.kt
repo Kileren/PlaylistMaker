@@ -2,9 +2,6 @@ package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.ViewModelProvider
@@ -14,27 +11,18 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 
 class AudioPlayerActivity: ComponentActivity() {
 
     private lateinit var viewModel: AudioPlayerViewModel
-
-    private val backButton: ImageView by lazy { findViewById(R.id.back_button) }
-    private val imageView: ImageView by lazy { findViewById(R.id.poster_image_view) }
-    private val trackTextView: TextView by lazy { findViewById(R.id.track_name_text_view) }
-    private val artistTextView: TextView by lazy { findViewById(R.id.artist_name_text_view) }
-    private val durationTextView: TextView by lazy { findViewById(R.id.song_duration_text_view) }
-    private val albumTextView: TextView by lazy { findViewById(R.id.album_text_view) }
-    private val yearTextView: TextView by lazy { findViewById(R.id.year_text_view) }
-    private val genreTextView: TextView by lazy { findViewById(R.id.genre_text_view) }
-    private val countryTextView: TextView by lazy { findViewById(R.id.country_text_view) }
-    private val albumContainerView: View by lazy { findViewById(R.id.album_container) }
-    private val playButton: ImageButton by lazy { findViewById(R.id.play_button) }
-    private val playbackTimeTextView: TextView by lazy { findViewById(R.id.playback_time_text_view) }
+    private lateinit var binding: ActivityAudioPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_audio_player)
+
+        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         viewModel = ViewModelProvider(
             this,
@@ -59,9 +47,9 @@ class AudioPlayerActivity: ComponentActivity() {
     }
 
     private fun configureUI() {
-        playButton.isEnabled = false
-        playButton.setOnClickListener { viewModel.playButtonTapped() }
-        backButton.setOnClickListener { finish() }
+        binding.playButton.isEnabled = false
+        binding.playButton.setOnClickListener { viewModel.playButtonTapped() }
+        binding.backButton.setOnClickListener { finish() }
     }
 
     private fun setObservers() {
@@ -83,33 +71,33 @@ class AudioPlayerActivity: ComponentActivity() {
             .load(model.coverArtwork)
             .transform(CenterCrop(), RoundedCorners(cornerRadius))
             .placeholder(R.drawable.image_placeholder)
-            .into(imageView)
+            .into(binding.posterImageView)
 
-        trackTextView.text = model.trackName
-        artistTextView.text = model.artistName
-        durationTextView.text = model.trackTime
+        binding.trackNameTextView.text = model.trackName
+        binding.artistNameTextView.text = model.artistName
+        binding.songDurationTextView.text = model.trackTime
         if (model.albumName != null) {
-            albumContainerView.visibility = View.VISIBLE
-            albumTextView.text = model.albumName
+            binding.albumContainer.visibility = View.VISIBLE
+            binding.albumTextView.text = model.albumName
         } else {
-            albumContainerView.visibility = View.GONE
+            binding.albumContainer.visibility = View.GONE
         }
-        yearTextView.text = model.releaseYear
-        genreTextView.text = model.genreName
-        countryTextView.text = model.country
+        binding.yearTextView.text = model.releaseYear
+        binding.genreTextView.text = model.genreName
+        binding.countryTextView.text = model.country
     }
 
     private fun showPlayButton() {
-        playButton.isEnabled = true
-        playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.play_icon))
+        binding.playButton.isEnabled = true
+        binding.playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.play_icon))
     }
 
     private fun showPauseButton() {
-        playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.pause_icon))
+        binding.playButton.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.pause_icon))
     }
 
     private fun updatePlaybackTime(value: String) {
-        playbackTimeTextView.text = value
+        binding.playbackTimeTextView.text = value
     }
 
     companion object {
