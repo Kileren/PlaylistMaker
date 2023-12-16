@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
@@ -13,7 +13,7 @@ import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 
-class AudioPlayerActivity: ComponentActivity() {
+class AudioPlayerActivity: AppCompatActivity() {
 
     private lateinit var viewModel: AudioPlayerViewModel
     private lateinit var binding: ActivityAudioPlayerBinding

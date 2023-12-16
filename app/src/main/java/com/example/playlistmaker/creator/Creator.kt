@@ -43,7 +43,7 @@ object Creator {
         return ITunesService()
     }
 
-    private fun createSharedPreferencesStorage(context: Context): SharedPreferencesStorage {
+    fun createSharedPreferencesStorage(context: Context): SharedPreferencesStorage {
         return SharedPreferencesStorage(context)
     }
 

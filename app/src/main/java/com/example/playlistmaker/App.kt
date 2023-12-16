@@ -2,12 +2,12 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.search.data.SharedPreferencesStorage
+import com.example.playlistmaker.creator.Creator
 
 class App: Application() {
 
     private val sharedPreferencesStorage by lazy {
-        SharedPreferencesStorage(this)
+        Creator.createSharedPreferencesStorage(this)
     }
 
     override fun onCreate() {
