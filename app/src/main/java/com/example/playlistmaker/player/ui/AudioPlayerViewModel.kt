@@ -15,6 +15,8 @@ import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.player.domain.impl.PlayerState
 import com.example.playlistmaker.player.domain.mappers.TrackMapper
+import com.example.playlistmaker.player.ui.models.AudioPlayerPlayButtonState
+import com.example.playlistmaker.player.ui.models.TrackInfo
 import com.example.playlistmaker.search.domain.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -23,11 +25,11 @@ class AudioPlayerViewModel(
     private val interactor: AudioPlayerInteractor
 ): ViewModel(), AudioPlayerInteractor.AudioPlayerConsumer, Player.StateListener {
 
-    private val trackInfo = MutableLiveData<TrackInfo>()
-    fun getTrackInfo(): LiveData<TrackInfo> = trackInfo
+    private val _trackInfo = MutableLiveData<TrackInfo>()
+    val trackInfo: LiveData<TrackInfo> = _trackInfo
 
-    private val audioPlaybackModel = MutableLiveData<AudioPlaybackModel>()
-    fun getAudioPlaybackModel(): LiveData<AudioPlaybackModel> = audioPlaybackModel
+    private val _audioPlaybackModel = MutableLiveData<AudioPlaybackModel>()
+    val audioPlaybackModel: LiveData<AudioPlaybackModel> = _audioPlaybackModel
 
     private val handler = Handler(Looper.getMainLooper())
     private val playerTimerRunnable = Runnable { refreshPlaybackTime() }
@@ -40,12 +42,12 @@ class AudioPlayerViewModel(
             return
         }
 
-        audioPlaybackModel.postValue(AudioPlaybackModel(playbackTime = context.getString(R.string.default_audio_playback_time)))
+        _audioPlaybackModel.postValue(AudioPlaybackModel(playbackTime = context.getString(R.string.default_audio_playback_time)))
 
         interactor.setPlayerStateListener(this)
         interactor.setPlayerCompletionListener {
             stopPlaybackTimeRefreshing()
-            audioPlaybackModel.postValue(
+            _audioPlaybackModel.postValue(
                 audioPlaybackModel.value?.copy(
                     playbackTime = context.getString(R.string.default_audio_playback_time),
                     playButtonState = AudioPlayerPlayButtonState.PLAY
@@ -82,15 +84,15 @@ class AudioPlayerViewModel(
 
     override fun consume(track: Track) {
         val trackInfo = TrackMapper.map(track)
-        this.trackInfo.postValue(trackInfo)
+        this._trackInfo.postValue(trackInfo)
     }
 
     override fun stateChanged(state: PlayerState) {
         when (state) {
-            PlayerState.PLAYING -> audioPlaybackModel.postValue(
+            PlayerState.PLAYING -> _audioPlaybackModel.postValue(
                 audioPlaybackModel.value?.copy(playButtonState = AudioPlayerPlayButtonState.PAUSE)
             )
-            PlayerState.PAUSED, PlayerState.PREPARED -> audioPlaybackModel.postValue(
+            PlayerState.PAUSED, PlayerState.PREPARED -> _audioPlaybackModel.postValue(
                 audioPlaybackModel.value?.copy(playButtonState = AudioPlayerPlayButtonState.PLAY)
             )
             else -> return
@@ -107,7 +109,7 @@ class AudioPlayerViewModel(
 
     private fun refreshPlaybackTime() {
         val time = playbackTimeFormmatter.format(interactor.currentPlayerPosition)
-        audioPlaybackModel.postValue(audioPlaybackModel.value?.copy(playbackTime = time))
+        _audioPlaybackModel.postValue(audioPlaybackModel.value?.copy(playbackTime = time))
         startPlaybackTimeRefreshing()
     }
 

@@ -21,11 +21,11 @@ class SearchViewModel(
 
     // State
 
-    private val state = MutableLiveData<SearchState>()
-    fun getState(): LiveData<SearchState> = state
+    private val _state = MutableLiveData<SearchState>()
+    val state: LiveData<SearchState> = _state
 
-    private val searchFieldText = MutableLiveData<String>()
-    fun getSearchFieldText(): LiveData<String> = searchFieldText
+    private val _searchFieldText = MutableLiveData<String>()
+    val searchFieldText: LiveData<String> = _searchFieldText
 
     private var currentSearchText: String = ""
 
@@ -38,7 +38,7 @@ class SearchViewModel(
     fun onRestoreInstanceState(savedInstanceState: Bundle) {
         val searchText = savedInstanceState.getString(SEARCH_VALUE)
         if (searchText != null) {
-            searchFieldText.postValue(searchText)
+            _searchFieldText.postValue(searchText)
         }
     }
 
@@ -47,7 +47,7 @@ class SearchViewModel(
         if (hasFocus && text?.isEmpty() == true) {
             showHistory()
         } else {
-            state.postValue(null)
+            _state.postValue(null)
         }
         searchDebounce()
     }
@@ -56,18 +56,18 @@ class SearchViewModel(
         if (hasFocus && text.isEmpty()) {
             showHistory()
         } else {
-            state.postValue(null)
+            _state.postValue(null)
         }
     }
 
     fun tapOnClearHistoryButton() {
         interactor.clearSearchHistory()
-        state.postValue(null)
+        _state.postValue(null)
     }
 
     fun tapOnClearTextButton() {
         showHistory()
-        searchFieldText.postValue("")
+        _searchFieldText.postValue("")
     }
 
     fun tapOnSearchButton() {
@@ -96,21 +96,21 @@ class SearchViewModel(
         val textToSearch = text ?: currentSearchText
         if (textToSearch.isEmpty()) return
 
-        state.postValue(SearchState.Loading)
+        _state.postValue(SearchState.Loading)
         interactor.search(
             text = textToSearch,
             onSuccess = {
-                state.postValue(SearchState.Result(it))
+                _state.postValue(SearchState.Result(it))
             },
             onError = {
-                state.postValue(SearchState.Error(textToSearch))
+                _state.postValue(SearchState.Error(textToSearch))
             }
         )
     }
 
     private fun showHistory() {
         val tracks = interactor.getSearchHistory()
-        state.postValue(SearchState.History(tracks))
+        _state.postValue(SearchState.History(tracks))
     }
 
     // Helpers

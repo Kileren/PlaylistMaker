@@ -1,7 +1,7 @@
 package com.example.playlistmaker.player.domain.mappers
 
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.player.ui.TrackInfo
+import com.example.playlistmaker.player.ui.models.TrackInfo
 import java.time.LocalDateTime
 
 object TrackMapper {

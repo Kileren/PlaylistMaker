@@ -7,7 +7,10 @@ class SettingsRepositoryImpl(
     private val prefs: SharedPreferencesStorage
 ): SettingsRepository {
 
-    override fun getDarkThemeState(): Boolean = prefs.darkTheme
+    override fun getDarkThemeState(): Boolean {
+        return prefs.darkTheme
+    }
+
     override fun setDarkThemeState(isDark: Boolean) {
         prefs.darkTheme = isDark
     }

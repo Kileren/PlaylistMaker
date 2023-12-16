@@ -31,7 +31,7 @@ class SettingsActivity: AppCompatActivity() {
     }
 
     private fun setObservers() {
-        viewModel.getDarkThemeState().observe(this) {
+        viewModel.darkThemeState.observe(this) {
             binding.themeSwitcher.isChecked = it
         }
     }

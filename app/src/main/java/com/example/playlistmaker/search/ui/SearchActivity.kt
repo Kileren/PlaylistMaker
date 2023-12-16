@@ -62,16 +62,16 @@ class SearchActivity : AppCompatActivity() {
 
     private fun configureViews() {
         setContentView(binding.root)
-        binding.exceptionContainer.visibility = View.GONE
-        binding.historyContainer.visibility = View.GONE
+        binding.exceptionContainer.isVisible = false
+        binding.historyContainer.isVisible = false
     }
 
     private fun setObservers() {
-        viewModel.getSearchFieldText().observe(this) {
+        viewModel.searchFieldText.observe(this) {
             binding.searchTextField.setText(it)
             binding.searchTextField.setSelection(it.length)
         }
-        viewModel.getState().observe(this) { state ->
+        viewModel.state.observe(this) { state ->
             when (state) {
                 SearchState.Loading -> setProgressBarVisible(true)
                 is SearchState.Error -> showNetworkError(state)
@@ -148,25 +148,25 @@ class SearchActivity : AppCompatActivity() {
     private fun setTracks(tracks: List<Track>) {
         searchAdapter.update(tracks)
         if (tracks.isEmpty()) {
-            binding.exceptionContainer.visibility = View.VISIBLE
-            binding.refreshButton.visibility = View.GONE
+            binding.exceptionContainer.isVisible = true
+            binding.refreshButton.isVisible = false
 
             binding.exceptionImageView.setImageDrawable(getDrawable(R.drawable.empty_search_icon))
             binding.exceptionTextView.text = getString(R.string.empty_search_text)
         } else {
-            binding.exceptionContainer.visibility = View.GONE
+            binding.exceptionContainer.isVisible = false
         }
         hideHistory()
     }
 
     private fun setProgressBarVisible(visible: Boolean) {
         if (visible) {
-            binding.progressBar.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-            binding.exceptionContainer.visibility = View.GONE
+            binding.progressBar.isVisible = true
+            binding.recyclerView.isVisible = false
+            binding.exceptionContainer.isVisible = false
         } else {
-            binding.progressBar.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
+            binding.progressBar.isVisible = false
+            binding.recyclerView.isVisible = true
         }
     }
 
@@ -180,8 +180,8 @@ class SearchActivity : AppCompatActivity() {
         configureRefreshButton(state.text)
 
         searchAdapter.update(listOf())
-        binding.exceptionContainer.visibility = View.VISIBLE
-        binding.refreshButton.visibility = View.VISIBLE
+        binding.exceptionContainer.isVisible = true
+        binding.refreshButton.isVisible = true
         hideHistory()
 
         binding.exceptionImageView.setImageDrawable(getDrawable(R.drawable.error_search_icon))
@@ -194,13 +194,13 @@ class SearchActivity : AppCompatActivity() {
 
         val tracks = history.tracks
         if (tracks.isEmpty()) return
-        binding.historyContainer.visibility = View.VISIBLE
-        binding.exceptionContainer.visibility = View.GONE
+        binding.historyContainer.isVisible = true
+        binding.exceptionContainer.isVisible = false
         updateHistoryListIfNeeded(tracks)
     }
 
     private fun hideHistory() {
-        binding.historyContainer.visibility = View.GONE
+        binding.historyContainer.isVisible = false
     }
 
     private fun updateHistoryListIfNeeded(tracks: Array<Track>) {

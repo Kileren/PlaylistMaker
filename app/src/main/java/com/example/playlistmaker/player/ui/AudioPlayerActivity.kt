@@ -1,9 +1,9 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import com.bumptech.glide.Glide
@@ -12,6 +12,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.player.ui.models.AudioPlayerPlayButtonState
+import com.example.playlistmaker.player.ui.models.TrackInfo
 
 class AudioPlayerActivity: AppCompatActivity() {
 
@@ -53,10 +55,10 @@ class AudioPlayerActivity: AppCompatActivity() {
     }
 
     private fun setObservers() {
-        viewModel.getTrackInfo().observe(this) {
+        viewModel.trackInfo.observe(this) {
             configure(it)
         }
-        viewModel.getAudioPlaybackModel().observe(this) {
+        viewModel.audioPlaybackModel.observe(this) {
             updatePlaybackTime(it.playbackTime)
             when (it.playButtonState) {
                 AudioPlayerPlayButtonState.PLAY -> showPlayButton()
@@ -74,18 +76,20 @@ class AudioPlayerActivity: AppCompatActivity() {
             .placeholder(R.drawable.image_placeholder)
             .into(binding.posterImageView)
 
-        binding.trackNameTextView.text = model.trackName
-        binding.artistNameTextView.text = model.artistName
-        binding.songDurationTextView.text = model.trackTime
-        if (model.albumName != null) {
-            binding.albumContainer.visibility = View.VISIBLE
-            binding.albumTextView.text = model.albumName
-        } else {
-            binding.albumContainer.visibility = View.GONE
+        with(binding) {
+            trackNameTextView.text = model.trackName
+            artistNameTextView.text = model.artistName
+            songDurationTextView.text = model.trackTime
+            if (model.albumName != null) {
+                albumContainer.isVisible = true
+                albumTextView.text = model.albumName
+            } else {
+                albumContainer.isVisible = false
+            }
+            yearTextView.text = model.releaseYear
+            genreTextView.text = model.genreName
+            countryTextView.text = model.country
         }
-        binding.yearTextView.text = model.releaseYear
-        binding.genreTextView.text = model.genreName
-        binding.countryTextView.text = model.country
     }
 
     private fun showPlayButton() {

@@ -15,11 +15,11 @@ class SettingsViewModel(
     private val sharingInteractor: SharingInteractor
 ): ViewModel() {
 
-    private val darkThemeState = MutableLiveData<Boolean>()
-    fun getDarkThemeState(): LiveData<Boolean> = darkThemeState
+    private val _darkThemeState = MutableLiveData<Boolean>()
+    val darkThemeState: LiveData<Boolean> = _darkThemeState
 
     init {
-        darkThemeState.postValue(interactor.getDarkThemeState())
+        _darkThemeState.postValue(interactor.getDarkThemeState())
     }
 
     fun shareApp() {
@@ -36,7 +36,7 @@ class SettingsViewModel(
 
     fun switchDarkTheme(isDark: Boolean) {
         interactor.setDarkThemeState(isDark)
-        darkThemeState.postValue(isDark)
+        _darkThemeState.postValue(isDark)
         AppCompatDelegate.setDefaultNightMode(
             if (isDark) {
                 AppCompatDelegate.MODE_NIGHT_YES
