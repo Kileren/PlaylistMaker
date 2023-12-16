@@ -61,6 +61,7 @@ class AudioPlayerActivity: ComponentActivity() {
             when (it.playButtonState) {
                 AudioPlayerPlayButtonState.PLAY -> showPlayButton()
                 AudioPlayerPlayButtonState.PAUSE -> showPauseButton()
+                else -> return@observe
             }
         }
     }

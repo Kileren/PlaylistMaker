@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.ui
 
 data class AudioPlaybackModel(
     val playbackTime: String = "",
-    val playButtonState: AudioPlayerPlayButtonState = AudioPlayerPlayButtonState.PLAY
+    val playButtonState: AudioPlayerPlayButtonState? = null
 )
 
 enum class AudioPlayerPlayButtonState {
