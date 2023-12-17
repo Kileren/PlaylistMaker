@@ -2,23 +2,21 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.data.storage.SharedPreferencesStorage
+import com.example.playlistmaker.creator.Creator
 
 class App: Application() {
 
     private val sharedPreferencesStorage by lazy {
-        SharedPreferencesStorage(this)
+        Creator.createSharedPreferencesStorage(this)
     }
 
     override fun onCreate() {
         super.onCreate()
-        switchTheme(darkThemeEnabled())
+        switchTheme()
     }
 
-    fun darkThemeEnabled() = sharedPreferencesStorage.darkTheme
-
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        sharedPreferencesStorage.darkTheme = darkThemeEnabled
+    private fun switchTheme() {
+        val darkThemeEnabled = sharedPreferencesStorage.darkTheme
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
                 AppCompatDelegate.MODE_NIGHT_YES
