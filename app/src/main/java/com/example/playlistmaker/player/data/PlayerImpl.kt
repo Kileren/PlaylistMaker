@@ -4,9 +4,9 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.player.domain.impl.PlayerState
 
-class PlayerImpl: Player {
-
-    private val mediaPlayer = MediaPlayer()
+class PlayerImpl(
+    private val mediaPlayer: MediaPlayer
+): Player {
     private var stateListener: Player.StateListener? = null
     private var completionListener: (() -> Unit)? = null
 

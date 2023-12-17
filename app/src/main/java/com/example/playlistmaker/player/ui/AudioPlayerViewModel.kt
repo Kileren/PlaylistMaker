@@ -7,9 +7,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
@@ -115,13 +112,5 @@ class AudioPlayerViewModel(
 
     companion object {
         private const val PLAYER_PLAYBACK_REFRESH_DELAY = 300L
-
-        fun getViewModelFactory(
-            interactor: AudioPlayerInteractor
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                AudioPlayerViewModel(interactor)
-            }
-        }
     }
 }

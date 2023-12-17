@@ -6,22 +6,12 @@ import com.example.playlistmaker.search.domain.Track
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class ITunesService {
-
-    private val converterFactory by lazy { GsonConverterFactory.create() }
-    private val retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(Endpoint.ITUNES.baseUrl)
-            .addConverterFactory(converterFactory)
-            .build()
-    }
-    private val service by lazy { retrofit.create(ITunesApi::class.java) }
-
+class ITunesService(
+    private val service: ITunesApi
+) {
     fun search(
         text: String,
         onSuccess: (List<Track>) -> Unit,
