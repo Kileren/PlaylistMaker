@@ -9,7 +9,7 @@ import com.example.playlistmaker.search.data.network.Endpoint
 import com.example.playlistmaker.search.data.network.ITunesApi
 import com.example.playlistmaker.search.data.network.ITunesService
 import com.example.playlistmaker.search.domain.SearchHistoryStorage
-import com.example.playlistmaker.sharing.data.ExternalNavigator
+import com.example.playlistmaker.sharing.domain.ExternalNavigator
 import com.example.playlistmaker.sharing.data.ExternalNavigatorImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module

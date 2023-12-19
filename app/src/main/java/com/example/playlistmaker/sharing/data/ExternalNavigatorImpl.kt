@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.example.playlistmaker.R
+import com.example.playlistmaker.sharing.domain.ExternalNavigator
 
 class ExternalNavigatorImpl(
     private val context: Context
