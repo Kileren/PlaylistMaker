@@ -48,11 +48,13 @@
             <TextView
                 style="@style/SettingsButtonTextStyle"
                 android:text="@string/dark_theme"/>
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/theme_switcher"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
+                app:thumbTint="@drawable/switch_thumb_tint"
+                app:trackTint="@drawable/switch_track_tint"
                 />
         </FrameLayout>
 

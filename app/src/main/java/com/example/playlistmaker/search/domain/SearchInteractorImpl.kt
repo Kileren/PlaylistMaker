@@ -2,17 +2,17 @@ package com.example.playlistmaker.search.domain
 
 class SearchInteractorImpl(
     private val searchRepository: SearchRepository,
-    private val searchHistoryStorage: SearchHistoryStorage
+    private val searchHistoryRepository: SearchHistoryRepository
 ): SearchInteractor {
 
-    override fun getSearchHistory(): Array<Track> = searchHistoryStorage.searchHistory
+    override fun getSearchHistory(): Array<Track> = searchHistoryRepository.searchHistory
 
     override fun clearSearchHistory() {
-        searchHistoryStorage.searchHistory = arrayOf()
+        searchHistoryRepository.searchHistory = arrayOf()
     }
 
     override fun addTrackToSearchHistory(track: Track) {
-        searchHistoryStorage.addTrackToHistory(track)
+        searchHistoryRepository.addTrackToHistory(track)
     }
 
     override fun search(text: String, onSuccess: (List<Track>) -> Unit, onError: () -> Unit) {

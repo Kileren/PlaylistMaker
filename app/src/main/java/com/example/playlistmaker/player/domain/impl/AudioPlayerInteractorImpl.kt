@@ -2,11 +2,11 @@ package com.example.playlistmaker.player.domain.impl
 
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
-import com.example.playlistmaker.search.domain.SearchHistoryStorage
+import com.example.playlistmaker.search.domain.SearchHistoryRepository
 
 class AudioPlayerInteractorImpl(
     val player: Player,
-    val searchHistoryStorage: SearchHistoryStorage
+    val searchHistoryRepository: SearchHistoryRepository
 ): AudioPlayerInteractor {
     override val currentPlayerState: PlayerState
         get() = player.state
@@ -17,7 +17,7 @@ class AudioPlayerInteractorImpl(
         id: String,
         consumer: AudioPlayerInteractor.AudioPlayerConsumer
     ) {
-        val track = searchHistoryStorage.getTrack(id)
+        val track = searchHistoryRepository.getTrack(id)
 
         if (track.previewUrl != null) {
             player.setUpPlayer(track.previewUrl)

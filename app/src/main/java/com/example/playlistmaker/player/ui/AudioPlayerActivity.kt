@@ -4,20 +4,18 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.ui.models.AudioPlayerPlayButtonState
 import com.example.playlistmaker.player.ui.models.TrackInfo
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity: AppCompatActivity() {
 
-    private lateinit var viewModel: AudioPlayerViewModel
+    private val viewModel by viewModel<AudioPlayerViewModel>()
     private lateinit var binding: ActivityAudioPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,13 +23,6 @@ class AudioPlayerActivity: AppCompatActivity() {
 
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(
-            this,
-            AudioPlayerViewModel.getViewModelFactory(
-                Creator.createAudioPlayerInteractor(this)
-            )
-        ).get()
 
         configureUI()
         setObservers()

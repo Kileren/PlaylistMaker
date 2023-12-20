@@ -2,14 +2,14 @@ package com.example.playlistmaker.search.data
 
 import android.content.Context
 import androidx.core.content.edit
-import com.example.playlistmaker.search.domain.SearchHistoryStorage
+import com.example.playlistmaker.search.domain.SearchHistoryRepository
 import com.example.playlistmaker.search.domain.Track
 import com.google.gson.Gson
 
-class SearchHistoryStorageImpl(private val context: Context): SearchHistoryStorage {
+class SearchHistoryRepositoryImpl(private val context: Context): SearchHistoryRepository {
 
     private companion object {
-        const val storageKey = "com.practicum.playlistMaker.searchHistoryStorage"
+        const val storageKey = "com.practicum.playlistMaker.searchHistoryRepository"
         const val searchHistoryKey = "searchHistoryKey"
     }
 

@@ -12,18 +12,16 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.player.ui.AudioPlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.domain.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
     private lateinit var binding: ActivitySearchBinding
 
     private val searchAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
@@ -37,13 +35,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding = ActivitySearchBinding.inflate(layoutInflater)
         configureViews()
-
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getViewModelFactory(
-                Creator.createSearchInteractor(this)
-            )
-        ).get()
 
         setObservers()
         setListeners()
