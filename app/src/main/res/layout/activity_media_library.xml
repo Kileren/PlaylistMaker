@@ -1,15 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".library.ui.MediaLibraryActivity">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/dynamic.background">
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="@dimen/size_48"
+            android:layout_height="@dimen/size_48"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/size_8"
+            android:foreground="?attr/selectableItemBackground"
+            android:scaleType="centerInside"
+            android:src="@drawable/arrow_back_nav_bar"
+            app:tint="@color/dynamic.text.primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:text="@string/media_library"
+            android:textSize="@dimen/YS_22"
+            android:textColor="@color/dynamic.text.primary" />
+
+    </LinearLayout>
+    
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_48"
+        app:tabTextColor="@color/dynamic.text.primary"
+        app:tabIndicatorColor="@color/dynamic.text.primary"
+        app:tabIndicatorFullWidth="true"
+        app:tabTextAppearance="@style/TabLayoutTextAppearance"
+        app:layout_constraintTop_toBottomOf="@id/navigation_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/size_16"
+        android:layout_marginRight="@dimen/size_16"
+        />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="TODO: Media Library Activity" />
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constrainedHeight="true"
+        />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
