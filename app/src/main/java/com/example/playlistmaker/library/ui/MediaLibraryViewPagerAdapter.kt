@@ -19,11 +19,7 @@ class MediaLibraryViewPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when(position) {
             0 -> LikedSongsFragment.newInstance()
-            1 -> PlaylistsFragment.newInstance()
-            else -> {
-                assert(false) { "Not implemented yet" }
-                return LikedSongsFragment.newInstance()
-            }
+            else -> PlaylistsFragment.newInstance()
         }
     }
 }

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".library.ui.MediaLibraryActivity">
+    tools:context=".library.ui.MediaLibraryActivity"
+    android:background="@color/dynamic.background">
 
     <LinearLayout
         android:id="@+id/navigation_bar"
@@ -41,6 +42,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_48"
+        android:background="@color/dynamic.background"
         app:tabTextColor="@color/dynamic.text.primary"
         app:tabIndicatorColor="@color/dynamic.text.primary"
         app:tabIndicatorFullWidth="true"
