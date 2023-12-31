@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mediaLibraryFragment"
+        android:icon="@drawable/media_library"
+        android:title="@string/media_library"
+        android:iconTint="@color/dynamic.text.primary"
+        />
+
+</menu>
