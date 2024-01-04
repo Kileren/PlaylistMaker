@@ -24,6 +24,8 @@
         android:id="@+id/bottomNavigationBar"
         android:layout_width="@dimen/size_0"
         android:layout_height="wrap_content"
+        app:itemIconTint="@color/tab_item_foreground"
+        app:itemTextColor="@color/tab_item_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

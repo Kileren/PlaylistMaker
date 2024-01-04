@@ -4,22 +4,16 @@
     <item
         android:id="@+id/searchFragment"
         android:icon="@drawable/search_loupe"
-        android:title="@string/search"
-        android:iconTint="@color/dynamic.text.primary"
-        />
+        android:title="@string/search" />
 
     <item
         android:id="@+id/mediaLibraryFragment"
         android:icon="@drawable/media_library"
-        android:title="@string/media_library"
-        android:iconTint="@color/dynamic.text.primary"
-        />
+        android:title="@string/media_library" />
 
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/setting"
-        android:title="@string/settings"
-        android:iconTint="@color/dynamic.text.primary"
-        />
+        android:title="@string/settings" />
 
 </menu>
