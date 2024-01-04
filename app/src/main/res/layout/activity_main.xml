@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:navGraph="@navigation/navigation_graph"
         />
-    
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationBar"
         android:layout_width="@dimen/size_0"
@@ -30,6 +30,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/bottom_navigation_menu"
+        />
+
+    <View
+        android:id="@+id/bottomNavigationBarSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/YPLightGray"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
