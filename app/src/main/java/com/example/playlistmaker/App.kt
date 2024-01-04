@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.app.Application
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
@@ -24,7 +25,13 @@ class App: Application() {
             androidContext(this@App)
             modules(dataModule, interactorModule, repositoryModule, viewModelModule)
         }
-        switchTheme()
+
+        if (sharedPreferencesStorage.isFirstLaunch) {
+            sharedPreferencesStorage.isFirstLaunch = false
+            setSystemTheme()
+        } else {
+            switchTheme()
+        }
     }
 
     private fun switchTheme() {
@@ -36,5 +43,14 @@ class App: Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
+    }
+
+    private fun setSystemTheme() {
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> sharedPreferencesStorage.darkTheme = true
+            Configuration.UI_MODE_NIGHT_NO -> sharedPreferencesStorage.darkTheme = false
+            else -> return
+        }
+        switchTheme()
     }
 }
