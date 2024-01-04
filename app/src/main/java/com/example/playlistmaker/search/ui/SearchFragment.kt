@@ -45,6 +45,11 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.onSaveInstanceState(outState, binding.searchTextField.text.toString())
@@ -150,10 +155,8 @@ class SearchFragment : Fragment() {
             binding.exceptionContainer.isVisible = true
             binding.refreshButton.isVisible = false
 
-            val image = context?.getDrawable(R.drawable.empty_search_icon)
-            if (image != null) {
-                binding.exceptionImageView.setImageDrawable(image)
-            }
+            val image = requireContext().getDrawable(R.drawable.empty_search_icon)
+            binding.exceptionImageView.setImageDrawable(image)
             binding.exceptionTextView.text = getString(R.string.empty_search_text)
         } else {
             binding.exceptionContainer.isVisible = false
@@ -186,10 +189,8 @@ class SearchFragment : Fragment() {
         binding.refreshButton.isVisible = true
         hideHistory()
 
-        val image = context?.getDrawable(R.drawable.error_search_icon)
-        if (image != null) {
-            binding.exceptionImageView.setImageDrawable(image)
-        }
+        val image = requireContext().getDrawable(R.drawable.error_search_icon)
+        binding.exceptionImageView.setImageDrawable(image)
         binding.exceptionTextView.text = getString(R.string.search_connection_error)
     }
 
