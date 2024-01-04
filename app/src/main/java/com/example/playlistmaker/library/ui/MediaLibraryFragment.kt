@@ -36,7 +36,7 @@ class MediaLibraryFragment : Fragment() {
         container: ViewGroup?
     ) {
         _binding = FragmentMediaLibraryBinding.inflate(inflater, container, false)
-        binding.viewPager.adapter = MediaLibraryViewPagerAdapter(parentFragmentManager, lifecycle)
+        binding.viewPager.adapter = MediaLibraryViewPagerAdapter(childFragmentManager, lifecycle)
     }
 
     private fun setUpAndConfigureTabMediator() {

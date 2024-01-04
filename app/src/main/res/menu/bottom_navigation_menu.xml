@@ -8,4 +8,11 @@
         android:iconTint="@color/dynamic.text.primary"
         />
 
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/setting"
+        android:title="@string/settings"
+        android:iconTint="@color/dynamic.text.primary"
+        />
+
 </menu>
