@@ -7,22 +7,25 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.player.ui.AudioPlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
 
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<SearchViewModel>()
-    private lateinit var binding: ActivitySearchBinding
 
     private val searchAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
     private val historyAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
@@ -30,15 +33,21 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        configureViews()
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setUpAndConfigureBindings(inflater, container)
         setObservers()
         setListeners()
         setupUI()
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -46,23 +55,28 @@ class SearchActivity : AppCompatActivity() {
         viewModel.onSaveInstanceState(outState, binding.searchTextField.text.toString())
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        viewModel.onRestoreInstanceState(savedInstanceState)
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            viewModel.onRestoreInstanceState(savedInstanceState)
+        }
     }
 
-    private fun configureViews() {
-        setContentView(binding.root)
+    private fun setUpAndConfigureBindings(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         binding.exceptionContainer.isVisible = false
         binding.historyContainer.isVisible = false
     }
 
     private fun setObservers() {
-        viewModel.searchFieldText.observe(this) {
+        viewModel.searchFieldText.observe(viewLifecycleOwner) {
             binding.searchTextField.setText(it)
             binding.searchTextField.setSelection(it.length)
         }
-        viewModel.state.observe(this) { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 SearchState.Loading -> setProgressBarVisible(true)
                 is SearchState.Error -> showNetworkError(state)
@@ -74,7 +88,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
-        binding.backButton.setOnClickListener { finish() }
         binding.searchTextField.addTextChangedListener(makeSearchTextWatcher())
         binding.searchTextField.setOnEditorActionListener(makeSearchEditorActionListener())
         binding.searchTextField.setOnFocusChangeListener { _, hasFocus ->
@@ -92,11 +105,11 @@ class SearchActivity : AppCompatActivity() {
         binding.clearImageView.isVisible = false
 
         // Recycler View
-        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = searchAdapter
 
         // History Recycler View
-        binding.historyRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.historyRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.historyRecyclerView.adapter = historyAdapter
     }
 
@@ -142,7 +155,8 @@ class SearchActivity : AppCompatActivity() {
             binding.exceptionContainer.isVisible = true
             binding.refreshButton.isVisible = false
 
-            binding.exceptionImageView.setImageDrawable(getDrawable(R.drawable.empty_search_icon))
+            val image = requireContext().getDrawable(R.drawable.empty_search_icon)
+            binding.exceptionImageView.setImageDrawable(image)
             binding.exceptionTextView.text = getString(R.string.empty_search_text)
         } else {
             binding.exceptionContainer.isVisible = false
@@ -175,7 +189,8 @@ class SearchActivity : AppCompatActivity() {
         binding.refreshButton.isVisible = true
         hideHistory()
 
-        binding.exceptionImageView.setImageDrawable(getDrawable(R.drawable.error_search_icon))
+        val image = requireContext().getDrawable(R.drawable.error_search_icon)
+        binding.exceptionImageView.setImageDrawable(image)
         binding.exceptionTextView.text = getString(R.string.search_connection_error)
     }
 
@@ -212,7 +227,7 @@ class SearchActivity : AppCompatActivity() {
 
         viewModel.tapOnTrack(track)
 
-        val audioPlayer = Intent(this, AudioPlayerActivity::class.java)
+        val audioPlayer = Intent(context, AudioPlayerActivity::class.java)
         audioPlayer.putExtra(AudioPlayerActivity.trackKey, track.trackId)
         startActivity(audioPlayer)
     }

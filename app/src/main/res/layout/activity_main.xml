@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dynamic.backgroundOnMain"
-    android:orientation="vertical"
-    android:paddingHorizontal="16dp">
+    android:background="@color/dynamic.background"
+    tools:context=".main.ui.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="56dp"
-        android:paddingTop="14dp"
-        android:text="@string/app_name"
-        android:textColor="@color/YPWhite"
-        android:fontFamily="@font/ys_display_medium"
-        android:textSize="@dimen/YS_22" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainFragmentContainerView"
+        android:layout_width="@dimen/size_0"
+        android:layout_height="@dimen/size_0"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:navGraph="@navigation/navigation_graph"
+        />
 
-    <LinearLayout
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationBar"
+        android:layout_width="@dimen/size_0"
+        android:layout_height="wrap_content"
+        android:background="@color/dynamic.background"
+        app:itemIconTint="@color/tab_item_foreground"
+        app:itemTextColor="@color/tab_item_foreground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:menu="@menu/bottom_navigation_menu"
+        />
+
+    <View
+        android:id="@+id/bottomNavigationBarSeparator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="24dp"
-        android:paddingBottom="28dp"
-        android:showDividers="middle"
-        android:divider="@drawable/clear_medium_divider">
+        android:layout_height="0.5dp"
+        android:background="@color/YPLightGray"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 
-        <Button
-            android:id="@+id/search_button"
-            style="@style/MainButtonStyle"
-            android:text="@string/search"
-            app:icon="@drawable/search_loupe" />
-
-        <Button
-            android:id="@+id/media_library_button"
-            style="@style/MainButtonStyle"
-            android:text="@string/media_library"
-            app:icon="@drawable/media_library" />
-
-        <Button
-            android:id="@+id/settings_button"
-            style="@style/MainButtonStyle"
-            android:text="@string/settings"
-            app:icon="@drawable/setting" />
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
