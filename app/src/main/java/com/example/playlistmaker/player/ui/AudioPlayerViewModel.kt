@@ -2,11 +2,10 @@ package com.example.playlistmaker.player.ui
 
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
@@ -15,6 +14,9 @@ import com.example.playlistmaker.player.domain.mappers.TrackMapper
 import com.example.playlistmaker.player.ui.models.AudioPlayerPlayButtonState
 import com.example.playlistmaker.player.ui.models.TrackInfo
 import com.example.playlistmaker.search.domain.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -28,8 +30,7 @@ class AudioPlayerViewModel(
     private val _audioPlaybackModel = MutableLiveData<AudioPlaybackModel>()
     val audioPlaybackModel: LiveData<AudioPlaybackModel> = _audioPlaybackModel
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val playerTimerRunnable = Runnable { refreshPlaybackTime() }
+    private var timerJob: Job? = null
     private val playbackTimeFormmatter = SimpleDateFormat("mm:ss", Locale.getDefault())
 
     fun onCreate(intent: Intent, context: Context) {
@@ -97,11 +98,14 @@ class AudioPlayerViewModel(
     }
 
     private fun startPlaybackTimeRefreshing() {
-        handler.postDelayed(playerTimerRunnable, PLAYER_PLAYBACK_REFRESH_DELAY)
+        timerJob = viewModelScope.launch {
+            delay(PLAYER_PLAYBACK_REFRESH_DELAY)
+            refreshPlaybackTime()
+        }
     }
 
     private fun stopPlaybackTimeRefreshing() {
-        handler.removeCallbacks(playerTimerRunnable)
+        timerJob?.cancel()
     }
 
     private fun refreshPlaybackTime() {

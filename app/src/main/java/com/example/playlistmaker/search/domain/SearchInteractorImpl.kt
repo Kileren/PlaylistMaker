@@ -1,5 +1,7 @@
 package com.example.playlistmaker.search.domain
 
+import kotlinx.coroutines.flow.Flow
+
 class SearchInteractorImpl(
     private val searchRepository: SearchRepository,
     private val searchHistoryRepository: SearchHistoryRepository
@@ -15,7 +17,7 @@ class SearchInteractorImpl(
         searchHistoryRepository.addTrackToHistory(track)
     }
 
-    override fun search(text: String, onSuccess: (List<Track>) -> Unit, onError: () -> Unit) {
-        searchRepository.search(text, onSuccess, onError)
+    override suspend fun search(text: String): Flow<List<Track>> {
+        return searchRepository.search(text)
     }
 }

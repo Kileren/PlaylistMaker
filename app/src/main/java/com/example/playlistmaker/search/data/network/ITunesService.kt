@@ -1,42 +1,26 @@
 package com.example.playlistmaker.search.data.network
 
 import com.example.playlistmaker.search.data.dto.TrackDto
-import com.example.playlistmaker.search.data.dto.ITunesSearchResponse
 import com.example.playlistmaker.search.domain.Track
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class ITunesService(
     private val service: ITunesApi
 ) {
-    fun search(
-        text: String,
-        onSuccess: (List<Track>) -> Unit,
-        onError: () -> Unit
-    ) {
-        service.search(text).enqueue(object : Callback<ITunesSearchResponse> {
-            override fun onResponse(
-                call: Call<ITunesSearchResponse>,
-                response: Response<ITunesSearchResponse>
-            ) {
-                when (response.code()) {
-                    200 -> {
-                        val songs = response.body()?.tracks?.mapNotNull { map(it) }
-                        onSuccess(songs ?: listOf())
-                    }
-                    else -> {
-                        onError()
-                    }
-                }
+    suspend fun search(
+        text: String
+    ): List<Track> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = service.search(text)
+                return@withContext response.tracks.mapNotNull<TrackDto, Track> { map(it) }
+            } catch (e: Throwable) {
+                throw e
             }
-
-            override fun onFailure(call: Call<ITunesSearchResponse>, t: Throwable) {
-                onError()
-            }
-        })
+        }
     }
 
     private fun map(dto: TrackDto): Track? {

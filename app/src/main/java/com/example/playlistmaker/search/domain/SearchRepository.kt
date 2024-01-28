@@ -1,9 +1,9 @@
 package com.example.playlistmaker.search.domain
 
+import kotlinx.coroutines.flow.Flow
+
 interface SearchRepository {
     fun search(
-        text: String,
-        onSuccess: (List<Track>) -> Unit,
-        onError: () -> Unit
-    )
+        text: String
+    ): Flow<List<Track>>
 }

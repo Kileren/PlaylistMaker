@@ -1,20 +1,20 @@
 package com.example.playlistmaker.search.ui
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.SearchInteractor
+import com.example.playlistmaker.utils.debounce
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val interactor: SearchInteractor
 ): ViewModel() {
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { search() }
+    private lateinit var searchDebounce: (String) -> Unit
 
     // State
 
@@ -27,6 +27,16 @@ class SearchViewModel(
     private var currentSearchText: String = ""
 
     // Public
+
+    fun onViewCreated() {
+        searchDebounce = debounce<String>(
+            SEARCH_DEBOUNCE_DELAY,
+            viewModelScope,
+            true
+        ) {
+            search()
+        }
+    }
 
     fun onSaveInstanceState(outState: Bundle, searchText: String) {
         outState.putString(SEARCH_VALUE, searchText)
@@ -46,7 +56,7 @@ class SearchViewModel(
         } else {
             _state.postValue(null)
         }
-        searchDebounce()
+        searchDebounce(text ?: "")
     }
 
     fun onFocusChanged(text: String, hasFocus: Boolean) {
@@ -84,25 +94,22 @@ class SearchViewModel(
 
     // Private
 
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
     private fun search(text: String? = null) {
         val textToSearch = text ?: currentSearchText
         if (textToSearch.isEmpty()) return
 
         _state.postValue(SearchState.Loading)
-        interactor.search(
-            text = textToSearch,
-            onSuccess = {
-                _state.postValue(SearchState.Result(it))
-            },
-            onError = {
-                _state.postValue(SearchState.Error(textToSearch))
+        viewModelScope.launch {
+            try {
+                interactor
+                    .search(textToSearch)
+                    .collect {
+                        _state.postValue(SearchState.Result(it))
+                    }
+            } catch (e: Throwable) {
+                _state.postValue((SearchState.Error(textToSearch)))
             }
-        )
+        }
     }
 
     private fun showHistory() {
