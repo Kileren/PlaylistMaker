@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.SearchInteractor
 import com.example.playlistmaker.utils.debounce
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val interactor: SearchInteractor
@@ -98,15 +99,17 @@ class SearchViewModel(
         if (textToSearch.isEmpty()) return
 
         _state.postValue(SearchState.Loading)
-        interactor.search(
-            text = textToSearch,
-            onSuccess = {
-                _state.postValue(SearchState.Result(it))
-            },
-            onError = {
-                _state.postValue(SearchState.Error(textToSearch))
+        viewModelScope.launch {
+            try {
+                interactor
+                    .search(textToSearch)
+                    .collect {
+                        _state.postValue(SearchState.Result(it))
+                    }
+            } catch (e: Throwable) {
+                _state.postValue((SearchState.Error(textToSearch)))
             }
-        )
+        }
     }
 
     private fun showHistory() {
