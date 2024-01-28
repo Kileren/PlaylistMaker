@@ -2,8 +2,6 @@ package com.example.playlistmaker.search.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -14,11 +12,14 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.player.ui.AudioPlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.Track
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -30,7 +31,6 @@ class SearchFragment : Fragment() {
     private val searchAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
     private val historyAdapter by lazy { SearchAdapter(listOf()) { onTrackTap(it) } }
 
-    private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
     override fun onCreateView(
@@ -43,6 +43,11 @@ class SearchFragment : Fragment() {
         setListeners()
         setupUI()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.onViewCreated()
     }
 
     override fun onDestroyView() {
@@ -144,7 +149,10 @@ class SearchFragment : Fragment() {
         val current = isClickAllowed
         if (current) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
