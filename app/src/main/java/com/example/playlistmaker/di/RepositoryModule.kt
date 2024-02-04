@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.library.data.FavouriteTracksRepositoryImpl
+import com.example.playlistmaker.library.domain.FavouriteTracksRepository
 import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.search.data.SearchRepositoryImpl
 import com.example.playlistmaker.search.domain.SearchHistoryRepository
@@ -12,7 +14,7 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     factory<SearchRepository> {
-        SearchRepositoryImpl(get())
+        SearchRepositoryImpl(get(), get())
     }
 
     factory<SettingsRepository> {
@@ -20,6 +22,10 @@ val repositoryModule = module {
     }
 
     single<SearchHistoryRepository> {
-        SearchHistoryRepositoryImpl(androidContext())
+        SearchHistoryRepositoryImpl(androidContext(), get())
+    }
+
+    single<FavouriteTracksRepository> {
+        FavouriteTracksRepositoryImpl(get(), get())
     }
 }

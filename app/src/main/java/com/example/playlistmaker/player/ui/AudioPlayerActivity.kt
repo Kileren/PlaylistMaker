@@ -43,6 +43,7 @@ class AudioPlayerActivity: AppCompatActivity() {
         binding.playButton.isEnabled = false
         binding.playButton.setOnClickListener { viewModel.playButtonTapped() }
         binding.backButton.setOnClickListener { finish() }
+        binding.likeButton.setOnClickListener { viewModel.favouriteButtonTapped() }
     }
 
     private fun setObservers() {
@@ -80,6 +81,11 @@ class AudioPlayerActivity: AppCompatActivity() {
             yearTextView.text = model.releaseYear
             genreTextView.text = model.genreName
             countryTextView.text = model.country
+            if (model.isFavourite) {
+                likeButton.setImageDrawable(getDrawable(R.drawable.like_icon_on))
+            } else {
+                likeButton.setImageDrawable(getDrawable(R.drawable.like_icon))
+            }
         }
     }
 

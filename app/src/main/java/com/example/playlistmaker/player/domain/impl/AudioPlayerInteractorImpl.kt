@@ -3,6 +3,7 @@ package com.example.playlistmaker.player.domain.impl
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.search.domain.SearchHistoryRepository
+import com.example.playlistmaker.search.domain.Track
 
 class AudioPlayerInteractorImpl(
     val player: Player,
@@ -13,16 +14,18 @@ class AudioPlayerInteractorImpl(
     override val currentPlayerPosition: Int
         get() = player.currentPosition
 
-    override fun loadTrack(
+    override suspend fun getTrack(id: String): Track {
+        return searchHistoryRepository.getTrack(id)
+    }
+
+    override suspend fun loadTrack(
         id: String,
         consumer: AudioPlayerInteractor.AudioPlayerConsumer
     ) {
-        val track = searchHistoryRepository.getTrack(id)
-
+        val track = getTrack(id)
         if (track.previewUrl != null) {
             player.setUpPlayer(track.previewUrl)
         }
-
         consumer.consume(track)
     }
 

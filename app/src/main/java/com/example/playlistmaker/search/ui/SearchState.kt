@@ -11,7 +11,7 @@ sealed class SearchState {
     ): SearchState()
 
     class History(
-        val tracks: Array<Track>
+        val tracks: List<Track>
     ): SearchState()
 
     class Result(

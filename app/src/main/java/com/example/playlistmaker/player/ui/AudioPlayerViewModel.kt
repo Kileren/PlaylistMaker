@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
+import com.example.playlistmaker.library.domain.FavouriteTracksInteractor
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.player.domain.impl.PlayerState
@@ -21,7 +22,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerViewModel(
-    private val interactor: AudioPlayerInteractor
+    private val interactor: AudioPlayerInteractor,
+    private val favouriteTracksInteractor: FavouriteTracksInteractor
 ): ViewModel(), AudioPlayerInteractor.AudioPlayerConsumer, Player.StateListener {
 
     private val _trackInfo = MutableLiveData<TrackInfo>()
@@ -52,7 +54,10 @@ class AudioPlayerViewModel(
                 )
             )
         }
-        interactor.loadTrack(trackID, this)
+
+        viewModelScope.launch {
+            interactor.loadTrack(trackID, this@AudioPlayerViewModel)
+        }
     }
 
     fun onPause() {
@@ -77,6 +82,22 @@ class AudioPlayerViewModel(
                 startPlaybackTimeRefreshing()
             }
             else -> return
+        }
+    }
+
+    fun favouriteButtonTapped() {
+        val trackId = trackInfo.value?.trackId
+        if (trackId != null) {
+            viewModelScope.launch {
+                val track = interactor.getTrack(trackId)
+                if (track.isFavourite) {
+                    favouriteTracksInteractor.removeTrack(track)
+                    _trackInfo.postValue(trackInfo.value?.copy(isFavourite = false))
+                } else {
+                    favouriteTracksInteractor.addTrack(track)
+                    _trackInfo.postValue(trackInfo.value?.copy(isFavourite = true))
+                }
+            }
         }
     }
 

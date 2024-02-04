@@ -10,5 +10,6 @@ data class TrackInfo(
     val trackTime: String,
     val genreName: String,
     val albumName: String?,
-    val releaseYear: String?
+    val releaseYear: String?,
+    val isFavourite: Boolean
 )

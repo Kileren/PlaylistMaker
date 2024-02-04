@@ -17,7 +17,8 @@ object TrackMapper {
             trackTime = track.trackTime,
             genreName = track.genreName,
             albumName = track.albumName,
-            releaseYear = getReleaseYearFrom(track)
+            releaseYear = getReleaseYearFrom(track),
+            isFavourite = track.isFavourite
         )
     }
 
