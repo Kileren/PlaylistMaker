@@ -68,8 +68,10 @@ class SearchViewModel(
     }
 
     fun tapOnClearHistoryButton() {
-        interactor.clearSearchHistory()
-        _state.postValue(null)
+        viewModelScope.launch {
+            interactor.clearSearchHistory()
+            _state.postValue(null)
+        }
     }
 
     fun tapOnClearTextButton() {
@@ -86,9 +88,11 @@ class SearchViewModel(
     }
 
     fun tapOnTrack(track: Track) {
-        interactor.addTrackToSearchHistory(track)
-        if (state.value is SearchState.History) {
-            showHistory()
+        viewModelScope.launch {
+            interactor.addTrackToSearchHistory(track)
+            if (state.value is SearchState.History) {
+                showHistory()
+            }
         }
     }
 
@@ -113,8 +117,10 @@ class SearchViewModel(
     }
 
     private fun showHistory() {
-        val tracks = interactor.getSearchHistory()
-        _state.postValue(SearchState.History(tracks))
+        viewModelScope.launch {
+            val tracks = interactor.getSearchHistory()
+            _state.postValue(SearchState.History(tracks))
+        }
     }
 
     // Helpers

@@ -1,6 +1,9 @@
 package com.example.playlistmaker.di
 
 import android.media.MediaPlayer
+import androidx.room.Room
+import com.example.playlistmaker.library.data.db.AppDatabase
+import com.example.playlistmaker.library.data.db.TrackDbConverter
 import com.example.playlistmaker.player.data.PlayerImpl
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.search.data.SharedPreferencesStorage
@@ -42,5 +45,14 @@ val dataModule = module {
 
     factory<ExternalNavigator> {
         ExternalNavigatorImpl(androidContext())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
+    }
+
+    single {
+        TrackDbConverter()
     }
 }

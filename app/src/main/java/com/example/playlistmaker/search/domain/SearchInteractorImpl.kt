@@ -7,13 +7,13 @@ class SearchInteractorImpl(
     private val searchHistoryRepository: SearchHistoryRepository
 ): SearchInteractor {
 
-    override fun getSearchHistory(): Array<Track> = searchHistoryRepository.searchHistory
+    override suspend fun getSearchHistory(): List<Track> = searchHistoryRepository.getSearchHistory()
 
-    override fun clearSearchHistory() {
-        searchHistoryRepository.searchHistory = arrayOf()
+    override suspend fun clearSearchHistory() {
+        searchHistoryRepository.setSearchHistory(listOf())
     }
 
-    override fun addTrackToSearchHistory(track: Track) {
+    override suspend fun addTrackToSearchHistory(track: Track) {
         searchHistoryRepository.addTrackToHistory(track)
     }
 

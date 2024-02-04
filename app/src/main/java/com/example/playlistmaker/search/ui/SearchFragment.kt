@@ -217,9 +217,9 @@ class SearchFragment : Fragment() {
         binding.historyContainer.isVisible = false
     }
 
-    private fun updateHistoryListIfNeeded(tracks: Array<Track>) {
+    private fun updateHistoryListIfNeeded(tracks: List<Track>) {
         if (binding.historyContainer.visibility == View.VISIBLE) {
-            historyAdapter.update(tracks.toList())
+            historyAdapter.update(tracks)
         }
     }
 

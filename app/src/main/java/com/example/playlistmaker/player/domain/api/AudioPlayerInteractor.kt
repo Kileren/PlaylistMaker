@@ -8,7 +8,9 @@ interface AudioPlayerInteractor {
     val currentPlayerState: PlayerState
     val currentPlayerPosition: Int
 
-    fun loadTrack(id: String, consumer: AudioPlayerConsumer)
+    suspend fun getTrack(id: String): Track
+
+    suspend fun loadTrack(id: String, consumer: AudioPlayerConsumer)
     fun setPlayerStateListener(listener: Player.StateListener)
     fun setPlayerCompletionListener(listener: () -> Unit)
 

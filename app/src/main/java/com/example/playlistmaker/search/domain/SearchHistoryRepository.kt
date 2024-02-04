@@ -1,7 +1,8 @@
 package com.example.playlistmaker.search.domain
 
 interface SearchHistoryRepository {
-    var searchHistory: Array<Track>
-    fun addTrackToHistory(track: Track)
-    fun getTrack(id: String): Track
+    suspend fun getSearchHistory(): List<Track>
+    suspend fun setSearchHistory(history: List<Track>)
+    suspend fun addTrackToHistory(track: Track)
+    suspend fun getTrack(id: String): Track
 }
