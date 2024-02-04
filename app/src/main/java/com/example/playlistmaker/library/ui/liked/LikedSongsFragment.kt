@@ -90,7 +90,7 @@ class LikedSongsFragment: Fragment() {
         if (current) {
             isClickAllowed = false
             viewLifecycleOwner.lifecycleScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }
         }
@@ -108,6 +108,6 @@ class LikedSongsFragment: Fragment() {
     companion object {
         fun newInstance() = LikedSongsFragment()
 
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }

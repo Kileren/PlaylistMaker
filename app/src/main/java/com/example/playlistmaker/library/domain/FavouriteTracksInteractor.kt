@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface FavouriteTracksInteractor {
     suspend fun addTrack(track: Track)
     suspend fun removeTrack(track: Track)
-    suspend fun getTracks(): Flow<List<Track>>
+    fun getTracks(): Flow<List<Track>>
 }

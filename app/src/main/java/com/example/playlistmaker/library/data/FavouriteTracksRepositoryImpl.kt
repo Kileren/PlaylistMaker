@@ -21,7 +21,7 @@ class FavouriteTracksRepositoryImpl(
         appDatabase.favouriteTracksDao().removeTrack(trackEntity)
     }
 
-    override suspend fun getTracks(): Flow<List<Track>> = flow {
+    override fun getTracks(): Flow<List<Track>> = flow {
         val tracks = appDatabase.favouriteTracksDao()
             .getTracks()
             .map { trackDbConverter.map(it) }
