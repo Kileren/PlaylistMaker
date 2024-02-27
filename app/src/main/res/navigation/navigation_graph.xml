@@ -17,13 +17,35 @@
         android:name="com.example.playlistmaker.library.ui.MediaLibraryFragment"
         android:label="MediaLibraryFragment"
         tools:layout="@layout/fragment_media_library"
-        />
+        >
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment"
+            app:enterAnim="@anim/zoom_in"
+            app:popEnterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popExitAnim="@anim/zoom_out"
+            />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.playlistmaker.settings.ui.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings"
+        />
+
+    <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="com.example.playlistmaker.library.ui.playlists.PlaylistsFragment"
+        android:label="PlaylistsFragment"
+        tools:layout="@layout/fragment_playlists"/>
+
+    <fragment
+        android:id="@+id/newPlaylistFragment"
+        android:name="com.example.playlistmaker.library.ui.newPlaylist.NewPlaylistFragment"
+        android:label="NewPlaylistFragment"
+        tools:layout="@layout/fragment_new_playlist"
         />
 
 </navigation>

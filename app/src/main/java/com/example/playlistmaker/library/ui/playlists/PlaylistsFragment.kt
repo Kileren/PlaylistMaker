@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -20,12 +22,21 @@ class PlaylistsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlaylistsBinding.inflate(layoutInflater, container, false)
+        setUpUI()
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setUpUI() {
+        binding.newPlaylistButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_newPlaylistFragment
+            )
+        }
     }
 
     companion object {

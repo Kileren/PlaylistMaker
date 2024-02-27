@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.library.domain.FavouriteTracksInteractor
+import com.example.playlistmaker.library.domain.favouriteTracks.FavouriteTracksInteractor
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.player.domain.impl.PlayerState

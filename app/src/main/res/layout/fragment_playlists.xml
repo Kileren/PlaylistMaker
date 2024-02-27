@@ -6,7 +6,7 @@
     android:background="@color/dynamic.background">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/clear_history_button"
+        android:id="@+id/new_playlist_button"
         style="@style/SupplementaryButtonStyle"
         android:text="@string/new_playlist"
         app:layout_constraintTop_toTopOf="parent"
