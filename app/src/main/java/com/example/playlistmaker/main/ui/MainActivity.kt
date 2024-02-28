@@ -21,10 +21,10 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.newPlaylistFragment) {
-                binding.bottomNavigationBar.isVisible = false
-            } else {
-                binding.bottomNavigationBar.isVisible = true
+            when (destination.id) {
+                R.id.newPlaylistFragment -> binding.bottomNavigationBar.isVisible = false
+                R.id.audioPlayerFragment -> binding.bottomNavigationBar.isVisible = false
+                else -> binding.bottomNavigationBar.isVisible = true
             }
         }
 

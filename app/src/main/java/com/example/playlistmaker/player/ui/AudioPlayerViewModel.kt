@@ -1,7 +1,6 @@
 package com.example.playlistmaker.player.ui
 
 import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,8 +40,8 @@ class AudioPlayerViewModel(
     private var timerJob: Job? = null
     private val playbackTimeFormmatter = SimpleDateFormat("mm:ss", Locale.getDefault())
 
-    fun onCreate(intent: Intent, context: Context) {
-        val trackID = intent.getStringExtra(AudioPlayerActivity.trackKey)
+    fun onCreate(fragment: AudioPlayerFragment, context: Context) {
+        val trackID = fragment.requireArguments().getString(AudioPlayerFragment.trackKey)
         if (trackID == null) {
             assert(false) { "Track ID should be passed" }
             return
