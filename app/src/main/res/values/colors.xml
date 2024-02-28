@@ -24,4 +24,6 @@
     <color name="dynamic.background">@color/YPWhite</color>
     <color name="dynamic.backgroundOnMain">@color/YPBlue</color>
     <color name="dynamic.background.supplementary">#3F1A1B22</color>
+    <!-- Foreground -->
+    <color name="dynamic.foreground.textInputEmptyBoxColor">@color/YPTextGray</color>
 </resources>

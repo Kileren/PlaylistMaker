@@ -30,4 +30,8 @@
     <string name="cancel">Cancel</string>
     <string name="complete">Complete</string>
     <string name="playlist_created_message">Playlist \"%1$s\" created</string>
+    <plurals name="number_of_tracks">
+        <item quantity="one">%1$d track</item>
+        <item quantity="other">%1$d tracks</item>
+    </plurals>
 </resources>

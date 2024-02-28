@@ -2,6 +2,7 @@
 <resources>
     <!-- SIZES -->
     <dimen name="size_0">0dp</dimen>
+    <dimen name="size_4">4dp</dimen>
     <dimen name="size_8">8dp</dimen>
     <dimen name="size_12">12dp</dimen>
     <dimen name="size_13">13dp</dimen>
@@ -24,6 +25,7 @@
 
     <!-- TEXT SIZES -->
     <dimen name="YS_11">11sp</dimen>
+    <dimen name="YS_12">12sp</dimen>
     <dimen name="YS_13">13sp</dimen>
     <dimen name="YS_14">14sp</dimen>
     <dimen name="YS_16">16sp</dimen>

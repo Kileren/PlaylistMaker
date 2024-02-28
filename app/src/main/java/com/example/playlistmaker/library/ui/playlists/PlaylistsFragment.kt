@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -16,6 +18,8 @@ class PlaylistsFragment: Fragment() {
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
 
+    private val playlistsAdapter = PlaylistsAdapter(listOf())
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,7 +27,13 @@ class PlaylistsFragment: Fragment() {
     ): View? {
         _binding = FragmentPlaylistsBinding.inflate(layoutInflater, container, false)
         setUpUI()
+        setObservers()
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateData()
     }
 
     override fun onDestroyView() {
@@ -36,6 +46,32 @@ class PlaylistsFragment: Fragment() {
             findNavController().navigate(
                 R.id.action_mediaLibraryFragment_to_newPlaylistFragment
             )
+        }
+
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.adapter = playlistsAdapter
+    }
+
+    private fun setObservers() {
+        viewModel.observeState().observe(viewLifecycleOwner) {
+            renderState(it)
+        }
+    }
+
+    private fun renderState(state: PlaylistsState) {
+        when (state) {
+            is PlaylistsState.Empty -> {
+                binding.recyclerView.isVisible = false
+                binding.imageView.isVisible = true
+                binding.messageTextView.isVisible = true
+            }
+            is PlaylistsState.Content -> {
+                binding.recyclerView.isVisible = true
+                binding.imageView.isVisible = false
+                binding.messageTextView.isVisible = false
+
+                playlistsAdapter.update(state.playlists)
+            }
         }
     }
 

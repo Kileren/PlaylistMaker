@@ -39,7 +39,8 @@ class NewPlaylistViewModel(
             id = 0,
             title = title,
             description = description,
-            coverUri = uri.toString()
+            coverUri = interactor.getCoverImage(title),
+            numberOfTracks = 0
         )
 
         viewModelScope.launch {

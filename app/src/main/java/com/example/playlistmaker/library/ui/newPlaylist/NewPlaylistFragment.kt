@@ -55,10 +55,16 @@ class NewPlaylistFragment: Fragment() {
         binding.createButton.setOnClickListener {
             didTapCreateButton()
         }
-        binding.titleEditText.doOnTextChanged { text, start, before, count ->
+        binding.titleEditText.doOnTextChanged { text, _, _, _ ->
             binding.titleTextInputLayout.textChanged(text)
             binding.createButton.isEnabled = !text.isNullOrEmpty()
         }
+        binding.descriptionEditText.doOnTextChanged { text, _, _, _ ->
+            binding.descriptionTextInputLayout.textChanged(text)
+        }
+
+        binding.titleTextInputLayout.textChanged(null)
+        binding.descriptionTextInputLayout.textChanged(null)
     }
 
     private fun setObservers() {
@@ -121,10 +127,10 @@ class NewPlaylistFragment: Fragment() {
 
 private fun TextInputLayout.textChanged(text: CharSequence?) {
     if (text.isNullOrEmpty()) {
-        defaultHintTextColor = resources.getColorStateList(R.color.YPTextGray, null)
-        setBoxStrokeColorStateList(resources.getColorStateList(R.color.YPTextGray, null))
+        defaultHintTextColor = resources.getColorStateList(R.color.dynamic_text_primary, null)
+        setBoxStrokeColorStateList(resources.getColorStateList(R.color.text_input_box_stroke_color, null))
     } else {
-        defaultHintTextColor = resources.getColorStateList(R.color.YPBlue, null)
-        setBoxStrokeColorStateList(resources.getColorStateList(R.color.YPBlue, null))
+        defaultHintTextColor = resources.getColorStateList(R.color.text_input_with_content_box_stroke_color, null)
+        setBoxStrokeColorStateList(resources.getColorStateList(R.color.text_input_with_content_box_stroke_color, null))
     }
 }
