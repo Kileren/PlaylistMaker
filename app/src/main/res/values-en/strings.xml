@@ -35,4 +35,6 @@
         <item quantity="other">%1$d tracks</item>
     </plurals>
     <string name="add_to_playlist">Add to playlist</string>
+    <string name="track_added_to_playlist">Track added to playlist \"%1$s\"</string>
+    <string name="track_already_added">Track already added to playlist \"%1$s\"</string>
 </resources>

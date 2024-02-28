@@ -58,6 +58,7 @@ class PlaylistsRepositoryImpl(
             title = playlist.title,
             description = playlist.description,
             coverUri = playlist.coverUri?.toString(),
+            tracks = playlist.tracks.joinToString(separator = ","),
             numberOfTracks = playlist.numberOfTracks
         )
     }
@@ -68,6 +69,7 @@ class PlaylistsRepositoryImpl(
             title = playlistEntity.title,
             description = playlistEntity.description,
             coverUri = playlistEntity.coverUri?.toUri(),
+            tracks = playlistEntity.tracks.split(","),
             numberOfTracks = playlistEntity.numberOfTracks
         )
     }

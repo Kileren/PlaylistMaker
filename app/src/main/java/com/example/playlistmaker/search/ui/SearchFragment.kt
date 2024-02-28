@@ -215,12 +215,12 @@ class SearchFragment : Fragment() {
     }
 
     private fun onTrackTap(track: Track) {
-        viewModel.tapOnTrack(track)
-
-        findNavController().navigate(
-            R.id.action_searchFragment_to_audioPlayerFragment,
-            bundleOf(AudioPlayerFragment.trackKey to track.trackId)
-        )
+        viewModel.tapOnTrack(track) {
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioPlayerFragment,
+                bundleOf(AudioPlayerFragment.trackKey to track.trackId)
+            )
+        }
     }
 
     companion object {

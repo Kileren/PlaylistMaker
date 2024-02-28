@@ -7,5 +7,6 @@ data class Playlist(
     val title: String,
     val description: String?,
     val coverUri: Uri?,
+    val tracks: List<String>,
     val numberOfTracks: Int
 )

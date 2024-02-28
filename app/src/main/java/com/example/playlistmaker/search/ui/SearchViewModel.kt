@@ -87,12 +87,13 @@ class SearchViewModel(
         search(text)
     }
 
-    fun tapOnTrack(track: Track) {
+    fun tapOnTrack(track: Track, completion: () -> Unit) {
         viewModelScope.launch {
             interactor.addTrackToSearchHistory(track)
             if (state.value is SearchState.History) {
                 showHistory()
             }
+            completion()
         }
     }
 

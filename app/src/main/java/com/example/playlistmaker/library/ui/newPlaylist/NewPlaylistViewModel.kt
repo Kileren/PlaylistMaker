@@ -40,6 +40,7 @@ class NewPlaylistViewModel(
             title = title,
             description = description,
             coverUri = interactor.getCoverImage(title),
+            tracks = listOf(),
             numberOfTracks = 0
         )
 

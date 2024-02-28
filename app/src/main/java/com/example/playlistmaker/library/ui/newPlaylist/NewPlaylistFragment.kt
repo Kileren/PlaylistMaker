@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -76,6 +77,9 @@ class NewPlaylistFragment: Fragment() {
             binding.imageView.clipToOutline = true
             binding.imageView.background = AppCompatResources.getDrawable(requireContext(), R.drawable.rounded_image_view_8dp)
             isImageSetted = true
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            didTapBackButton()
         }
     }
 

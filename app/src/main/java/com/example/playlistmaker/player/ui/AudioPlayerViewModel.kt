@@ -13,6 +13,7 @@ import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.player.domain.impl.PlayerState
 import com.example.playlistmaker.player.domain.mappers.TrackMapper
+import com.example.playlistmaker.player.ui.models.AddingToPlaylistResult
 import com.example.playlistmaker.player.ui.models.AudioPlayerPlayButtonState
 import com.example.playlistmaker.player.ui.models.TrackInfo
 import com.example.playlistmaker.search.domain.Track
@@ -36,6 +37,9 @@ class AudioPlayerViewModel(
 
     private val playlistsData = MutableLiveData<List<Playlist>>()
     val observePlaylists: LiveData<List<Playlist>> = playlistsData
+
+    private val addingToPlaylistResult = MutableLiveData<AddingToPlaylistResult>()
+    val observeAddingToPlaylist: LiveData<AddingToPlaylistResult> = addingToPlaylistResult
 
     private var timerJob: Job? = null
     private val playbackTimeFormmatter = SimpleDateFormat("mm:ss", Locale.getDefault())
@@ -110,6 +114,19 @@ class AudioPlayerViewModel(
         viewModelScope.launch {
             playlistsInteractor.getPlaylists().collect() {
                 playlistsData.postValue(it)
+            }
+        }
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist) {
+        val trackId = trackInfo.value?.trackId ?: return
+
+        if (playlist.tracks.contains(trackId)) {
+            addingToPlaylistResult.postValue(AddingToPlaylistResult.AlreadyExists(playlist.title))
+        } else {
+            viewModelScope.launch {
+                playlistsInteractor.addTrackToPlaylist(playlist, trackId)
+                addingToPlaylistResult.postValue(AddingToPlaylistResult.Added(playlist.title))
             }
         }
     }

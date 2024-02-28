@@ -16,6 +16,7 @@ class PlayerImpl(
 
     override fun setUpPlayer(previewURL: String) {
         mediaPlayer.apply {
+            reset()
             setDataSource(previewURL)
             prepareAsync()
             setOnPreparedListener {
