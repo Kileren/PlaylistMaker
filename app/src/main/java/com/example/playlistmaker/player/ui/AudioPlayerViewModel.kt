@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
+import com.example.playlistmaker.library.domain.Playlist
 import com.example.playlistmaker.library.domain.favouriteTracks.FavouriteTracksInteractor
+import com.example.playlistmaker.library.domain.playlists.PlaylistsInteractor
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.player.domain.impl.PlayerState
@@ -23,7 +25,8 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val interactor: AudioPlayerInteractor,
-    private val favouriteTracksInteractor: FavouriteTracksInteractor
+    private val favouriteTracksInteractor: FavouriteTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ): ViewModel(), AudioPlayerInteractor.AudioPlayerConsumer, Player.StateListener {
 
     private val _trackInfo = MutableLiveData<TrackInfo>()
@@ -31,6 +34,9 @@ class AudioPlayerViewModel(
 
     private val _audioPlaybackModel = MutableLiveData<AudioPlaybackModel>()
     val audioPlaybackModel: LiveData<AudioPlaybackModel> = _audioPlaybackModel
+
+    private val playlistsData = MutableLiveData<List<Playlist>>()
+    val observePlaylists: LiveData<List<Playlist>> = playlistsData
 
     private var timerJob: Job? = null
     private val playbackTimeFormmatter = SimpleDateFormat("mm:ss", Locale.getDefault())
@@ -97,6 +103,14 @@ class AudioPlayerViewModel(
                     favouriteTracksInteractor.addTrack(track)
                     _trackInfo.postValue(trackInfo.value?.copy(isFavourite = true))
                 }
+            }
+        }
+    }
+
+    fun addToPlaylistButtonTapped() {
+        viewModelScope.launch {
+            playlistsInteractor.getPlaylists().collect() {
+                playlistsData.postValue(it)
             }
         }
     }

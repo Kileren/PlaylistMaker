@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -11,12 +12,15 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.ui.models.AudioPlayerPlayButtonState
 import com.example.playlistmaker.player.ui.models.TrackInfo
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity: AppCompatActivity() {
 
     private val viewModel by viewModel<AudioPlayerViewModel>()
     private lateinit var binding: ActivityAudioPlayerBinding
+
+    private val playlistsAdapter by lazy { AudioPlayerPlaylistsAdapter(listOf()) {  } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,10 +44,25 @@ class AudioPlayerActivity: AppCompatActivity() {
     }
 
     private fun configureUI() {
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = playlistsAdapter
+
         binding.playButton.isEnabled = false
         binding.playButton.setOnClickListener { viewModel.playButtonTapped() }
         binding.backButton.setOnClickListener { finish() }
         binding.likeButton.setOnClickListener { viewModel.favouriteButtonTapped() }
+        binding.playlistButton.setOnClickListener {
+            viewModel.addToPlaylistButtonTapped()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.dimOverlay.isVisible = true
+        }
+        binding.dimOverlay.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.dimOverlay.isVisible = false
+        }
     }
 
     private fun setObservers() {
@@ -57,6 +76,9 @@ class AudioPlayerActivity: AppCompatActivity() {
                 AudioPlayerPlayButtonState.PAUSE -> showPauseButton()
                 else -> return@observe
             }
+        }
+        viewModel.observePlaylists.observe(this) {
+            playlistsAdapter.update(it)
         }
     }
 
