@@ -1,6 +1,7 @@
 package com.example.playlistmaker.library.domain.playlists
 
 import com.example.playlistmaker.library.domain.Playlist
+import com.example.playlistmaker.search.domain.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistsInteractorImpl(
@@ -10,11 +11,7 @@ class PlaylistsInteractorImpl(
         return repository.getPlaylists()
     }
 
-    override suspend fun addTrackToPlaylist(playlist: Playlist, trackId: String) {
-        val newPlaylist = playlist.copy(
-            tracks = playlist.tracks + trackId,
-            numberOfTracks = playlist.numberOfTracks + 1
-        )
-        repository.createPlaylist(newPlaylist)
+    override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        repository.addTrackToPlaylist(playlist, track)
     }
 }

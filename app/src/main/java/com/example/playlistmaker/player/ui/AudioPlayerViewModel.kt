@@ -44,6 +44,8 @@ class AudioPlayerViewModel(
     private var timerJob: Job? = null
     private val playbackTimeFormmatter = SimpleDateFormat("mm:ss", Locale.getDefault())
 
+    private var track: Track? = null
+
     fun onCreate(fragment: AudioPlayerFragment, context: Context) {
         val trackID = fragment.requireArguments().getString(AudioPlayerFragment.trackKey)
         if (trackID == null) {
@@ -119,19 +121,21 @@ class AudioPlayerViewModel(
     }
 
     fun addTrackToPlaylist(playlist: Playlist) {
-        val trackId = trackInfo.value?.trackId ?: return
+        val track = this.track ?: return
 
-        if (playlist.tracks.contains(trackId)) {
+        if (playlist.tracks.contains(track.trackId)) {
             addingToPlaylistResult.postValue(AddingToPlaylistResult.AlreadyExists(playlist.title))
         } else {
             viewModelScope.launch {
-                playlistsInteractor.addTrackToPlaylist(playlist, trackId)
+                playlistsInteractor.addTrackToPlaylist(playlist, track)
                 addingToPlaylistResult.postValue(AddingToPlaylistResult.Added(playlist.title))
             }
         }
     }
 
     override fun consume(track: Track) {
+        this.track = track
+
         val trackInfo = TrackMapper.map(track)
         this._trackInfo.postValue(trackInfo)
     }
