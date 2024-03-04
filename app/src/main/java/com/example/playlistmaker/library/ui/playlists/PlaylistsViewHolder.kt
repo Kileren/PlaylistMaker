@@ -20,8 +20,12 @@ class PlaylistsViewHolder(view: View): RecyclerView.ViewHolder(view) {
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             imageView.clipToOutline = true
             imageView.background = AppCompatResources.getDrawable(itemView.context, R.drawable.rounded_image_view_8dp)
+            imageView.scaleX = 1F
+            imageView.scaleY = 1F
         } else {
             imageView.setImageResource(R.drawable.image_placeholder)
+            imageView.scaleX = 0.85F
+            imageView.scaleY = 0.85F
         }
 
         titleTextView.text = playlist.title

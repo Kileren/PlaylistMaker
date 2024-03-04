@@ -22,9 +22,15 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.newPlaylistFragment -> binding.bottomNavigationBar.isVisible = false
-                R.id.audioPlayerFragment -> binding.bottomNavigationBar.isVisible = false
-                else -> binding.bottomNavigationBar.isVisible = true
+                R.id.newPlaylistFragment,
+                R.id.audioPlayerFragment -> {
+                    binding.bottomNavigationBar.isVisible = false
+                    binding.bottomNavigationBarSeparator.isVisible = false
+                }
+                else -> {
+                    binding.bottomNavigationBar.isVisible = true
+                    binding.bottomNavigationBarSeparator.isVisible = true
+                }
             }
         }
 
