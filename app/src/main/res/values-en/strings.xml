@@ -22,4 +22,19 @@
     <string name="liked_songs_empty">Your library is empty</string>
     <string name="playlists_empty">You haven\'t created\nany playlist</string>
     <string name="new_playlist">New playlist</string>
+    <string name="new_playlist_title_hint">Title*</string>
+    <string name="new_playlist_description_hint">Description</string>
+    <string name="create">Create</string>
+    <string name="new_playlist_exit_dialog_title">Do you want to complete playlist creating?</string>
+    <string name="new_playlist_exit_dialog_message">All unsaved data will be lost</string>
+    <string name="cancel">Cancel</string>
+    <string name="complete">Complete</string>
+    <string name="playlist_created_message">Playlist \"%1$s\" created</string>
+    <plurals name="number_of_tracks">
+        <item quantity="one">%1$d track</item>
+        <item quantity="other">%1$d tracks</item>
+    </plurals>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="track_added_to_playlist">Track added to playlist \"%1$s\"</string>
+    <string name="track_already_added">Track already added to playlist \"%1$s\"</string>
 </resources>

@@ -54,4 +54,8 @@
         <item name="font">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/YS_14</item>
     </style>
+    <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/dynamic.foreground.textInputEmptyBoxColor</item>
+        <item name="hintTextColor">@color/dynamic.foreground.textInputEmptyBoxColor</item>
+    </style>
 </resources>

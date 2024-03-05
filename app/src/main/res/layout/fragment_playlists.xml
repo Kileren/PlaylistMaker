@@ -6,7 +6,7 @@
     android:background="@color/dynamic.background">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/clear_history_button"
+        android:id="@+id/new_playlist_button"
         style="@style/SupplementaryButtonStyle"
         android:text="@string/new_playlist"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,6 +31,7 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
+        android:id="@+id/message_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/playlists_empty"
@@ -43,5 +44,17 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="@dimen/size_24"
         android:layout_marginRight="@dimen/size_24" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="@dimen/size_0"
+        android:layout_height="@dimen/size_0"
+        app:layout_constraintTop_toBottomOf="@id/new_playlist_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/size_16"
+        android:layout_marginHorizontal="@dimen/size_12"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

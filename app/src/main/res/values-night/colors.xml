@@ -24,4 +24,8 @@
     <color name="dynamic.background">@color/YPBlack</color>
     <color name="dynamic.backgroundOnMain">@color/YPBlack</color>
     <color name="dynamic.background.supplementary">#3FFFFFFF</color>
+    <color name="dynamic.background.overlay">#801A1B22</color>
+    <color name="dynamic.background.overlayNotch">@color/YPWhite</color>
+    <!-- Foreground -->
+    <color name="dynamic.foreground.textInputEmptyBoxColor">@color/YPWhite</color>
 </resources>
