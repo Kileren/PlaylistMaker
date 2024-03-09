@@ -28,6 +28,15 @@ class PlaylistsRepositoryImpl(
         emit(playlists)
     }
 
+    override suspend fun getPlaylist(id: Int): Flow<Playlist?> = flow {
+        val playlist = appDatabase.playlistsDao().getPlaylist(id)
+        if (playlist != null) {
+            emit(map(playlist))
+        } else {
+            emit(null)
+        }
+    }
+
     override suspend fun createPlaylist(playlist: Playlist) {
         appDatabase.playlistsDao().addPlaylist(map(playlist))
     }
@@ -39,6 +48,12 @@ class PlaylistsRepositoryImpl(
         )
         appDatabase.playlistsDao().addPlaylist(map(newPlaylist))
         appDatabase.playlistTracksDao().addTrack(trackDbConverter.mapForPlaylist(track))
+    }
+
+    override suspend fun getTracksInPlaylist(playlist: Playlist): Flow<List<Track>> = flow {
+        val tracks = appDatabase.playlistTracksDao().getTracks(playlist.tracks)
+            .map { trackDbConverter.mapFromPlaylist(it) }
+        emit(tracks)
     }
 
     override fun saveCoverImage(uri: Uri, imageName: String) {

@@ -11,7 +11,15 @@ class PlaylistsInteractorImpl(
         return repository.getPlaylists()
     }
 
+    override suspend fun getPlaylist(id: Int): Flow<Playlist?> {
+        return repository.getPlaylist(id)
+    }
+
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         repository.addTrackToPlaylist(playlist, track)
+    }
+
+    override suspend fun getTracksInPlaylist(playlist: Playlist): Flow<List<Track>> {
+        return repository.getTracksInPlaylist(playlist)
     }
 }
