@@ -56,6 +56,11 @@ class PlaylistsRepositoryImpl(
         emit(tracks)
     }
 
+    override suspend fun getTrackSavedInPlaylist(trackId: String): Track {
+        val trackEntity = appDatabase.playlistTracksDao().getTracks(listOf(trackId)).first()
+        return trackDbConverter.mapFromPlaylist(trackEntity)
+    }
+
     override fun saveCoverImage(uri: Uri, imageName: String) {
         val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), ALBUM_NAME)
         if (!filePath.exists()) {

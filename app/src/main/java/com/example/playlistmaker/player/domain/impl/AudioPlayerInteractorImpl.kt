@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.domain.impl
 
+import com.example.playlistmaker.library.domain.playlists.PlaylistsRepository
 import com.example.playlistmaker.player.domain.api.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.api.Player
 import com.example.playlistmaker.search.domain.SearchHistoryRepository
@@ -7,7 +8,8 @@ import com.example.playlistmaker.search.domain.Track
 
 class AudioPlayerInteractorImpl(
     val player: Player,
-    val searchHistoryRepository: SearchHistoryRepository
+    val searchHistoryRepository: SearchHistoryRepository,
+    val playlistRepository: PlaylistsRepository
 ): AudioPlayerInteractor {
     override val currentPlayerState: PlayerState
         get() = player.state
@@ -15,7 +17,11 @@ class AudioPlayerInteractorImpl(
         get() = player.currentPosition
 
     override suspend fun getTrack(id: String): Track {
-        return searchHistoryRepository.getTrack(id)
+        try {
+            return searchHistoryRepository.getTrack(id)
+        } catch (e: NoSuchElementException) {
+            return playlistRepository.getTrackSavedInPlaylist(id)
+        }
     }
 
     override suspend fun loadTrack(

@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import androidx.activity.addCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+import com.example.playlistmaker.player.ui.AudioPlayerFragment
+import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.ui.SearchAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -23,8 +26,7 @@ class PlaylistFragment: Fragment() {
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
 
-    private val bottomSheetBehavior by lazy { BottomSheetBehavior.from(binding.bottomSheet) }
-    private val tracksAdapter by lazy { SearchAdapter(listOf()) { } }
+    private val tracksAdapter by lazy { SearchAdapter(listOf()) { didTapTrack(it) } }
 
     private var globalLayoutListener: OnGlobalLayoutListener? = null
 
@@ -44,7 +46,7 @@ class PlaylistFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         globalLayoutListener = OnGlobalLayoutListener {
             val bottomSheetTopPadding = requireContext().resources.getDimension(R.dimen.size_24)
-            bottomSheetBehavior.peekHeight =
+            BottomSheetBehavior.from(binding.bottomSheet).peekHeight =
                 view.height - binding.infoContainerLinearLayout.bottom - bottomSheetTopPadding.toInt()
         }
         view.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
@@ -110,6 +112,13 @@ class PlaylistFragment: Fragment() {
 
     private fun didTapBackButton() {
         findNavController().navigateUp()
+    }
+
+    private fun didTapTrack(track: Track) {
+        findNavController().navigate(
+            R.id.action_playlistFragment_to_audioPlayerFragment,
+            bundleOf(AudioPlayerFragment.trackKey to track.trackId)
+        )
     }
 
     companion object {
