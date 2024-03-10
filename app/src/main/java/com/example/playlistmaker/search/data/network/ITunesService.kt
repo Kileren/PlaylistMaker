@@ -31,7 +31,7 @@ class ITunesService(
                 artistName = dto.artistName,
                 artworkUrl100 = dto.artworkUrl100,
                 country = dto.country ?: "",
-                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(dto.trackTimeMillis),
+                trackTimeMillis = dto.trackTimeMillis ?: 0,
                 releaseDate = dto.releaseDate,
                 previewUrl = dto.previewUrl,
                 genreName = dto.genreName ?: "",

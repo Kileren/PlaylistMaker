@@ -52,32 +52,25 @@ class PlaylistViewModel(
     private fun getAdditionalInfoText(tracks: List<Track>, context: Context): String {
         if (tracks.isEmpty()) {
             val duration = context.resources.getQuantityString(R.plurals.minutes, 0, 0)
-            val tracks = context.resources.getQuantityString(R.plurals.number_of_tracks, 0, 0)
-            return "$duration • $tracks"
+            val tracksCount = context.resources.getQuantityString(R.plurals.number_of_tracks, 0, 0)
+            return "$duration • $tracksCount"
         }
 
-        val formatterToSeconds = SimpleDateFormat("mm:ss")
-        val totalDurationSeconds = tracks
-            .map { it.trackTime }
-            .map { trackTime ->
-                val parsedValue = formatterToSeconds.parse(trackTime)
-                (parsedValue?.minutes ?: 0) * 60 + (parsedValue?.seconds ?: 0)
-            }
+        val totalDurationMillis = tracks
+            .map { it.trackTimeMillis }
             .reduce { acc, time -> acc + time }
-        val totalDuration = SimpleDateFormat("mm", Locale.getDefault()).format(totalDurationSeconds * 1000)
-        val totalDurationMinutes = SimpleDateFormat("mm").parse(totalDuration)?.minutes ?: 0
+        val totalDuration = SimpleDateFormat("mm", Locale.getDefault()).format(totalDurationMillis).toInt()
         val duration = context.resources.getQuantityString(
             R.plurals.minutes,
-            totalDurationMinutes,
-            totalDurationMinutes
+            totalDuration,
+            totalDuration
         )
-
-        val tracks = context.resources.getQuantityString(
+        val tracksCount = context.resources.getQuantityString(
             R.plurals.number_of_tracks,
             tracks.size,
             tracks.size
         )
 
-        return "$duration • $tracks"
+        return "$duration • $tracksCount"
     }
 }
