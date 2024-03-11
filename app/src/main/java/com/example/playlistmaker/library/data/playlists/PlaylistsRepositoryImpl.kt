@@ -61,6 +61,19 @@ class PlaylistsRepositoryImpl(
         return trackDbConverter.mapFromPlaylist(trackEntity)
     }
 
+    override suspend fun removeTrackFromPlaylist(playlistId: Int, trackId: String) {
+        val playlistEntity = appDatabase.playlistsDao().getPlaylist(playlistId) ?: return
+        val playlist = map(playlistEntity)
+        val updatedTracks = playlist.tracks.toMutableList()
+        updatedTracks.remove(trackId)
+        val updatedPlaylist = playlist.copy(
+            tracks = updatedTracks,
+            numberOfTracks = playlist.numberOfTracks - 1
+        )
+        appDatabase.playlistsDao().updatePlaylist(map(updatedPlaylist))
+        appDatabase.playlistTracksDao().removeTrack(trackId)
+    }
+
     override fun saveCoverImage(uri: Uri, imageName: String) {
         val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), ALBUM_NAME)
         if (!filePath.exists()) {

@@ -16,8 +16,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.player.ui.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.search.ui.SearchAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment: Fragment() {
@@ -26,7 +26,11 @@ class PlaylistFragment: Fragment() {
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
 
-    private val tracksAdapter by lazy { SearchAdapter(listOf()) { didTapTrack(it) } }
+    private val tracksAdapter by lazy { PlaylistTrackAdapter(
+        listOf(),
+        onTap = { didTapTrack(it) },
+        onLongTap = { didTapTrackLong(it) }
+    )}
 
     private var globalLayoutListener: OnGlobalLayoutListener? = null
 
@@ -119,6 +123,19 @@ class PlaylistFragment: Fragment() {
             R.id.action_playlistFragment_to_audioPlayerFragment,
             bundleOf(AudioPlayerFragment.trackKey to track.trackId)
         )
+    }
+
+    private fun didTapTrackLong(track: Track) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(requireContext().getString(R.string.remove_track_title))
+            .setMessage(requireContext().getString(R.string.remove_track_description))
+            .setNeutralButton(requireContext().getString(R.string.cancel)) { dialog, _ ->
+                dialog.cancel()
+            }
+            .setNegativeButton(requireContext().getString(R.string.remove)) { _, _ ->
+                viewModel.removeTrack(track, requireContext())
+            }
+            .show()
     }
 
     companion object {

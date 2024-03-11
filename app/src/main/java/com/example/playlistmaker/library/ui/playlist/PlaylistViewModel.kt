@@ -20,21 +20,37 @@ class PlaylistViewModel(
     private val state = MutableLiveData<PlaylistState>()
     fun observeState(): LiveData<PlaylistState> = state
 
+    private var playlistId: Int? = null
+
     fun onCreate(fragment: PlaylistFragment, context: Context) {
-        val playlistID = fragment.requireArguments().getInt(PlaylistFragment.playlistKey)
+        val playlistId = fragment.requireArguments().getInt(PlaylistFragment.playlistKey)
+        this.playlistId = playlistId
 
         viewModelScope.launch {
-            interactor.getPlaylist(playlistID).collect() { playlist ->
-                if (playlist == null) {
-                    assert(false) { "Playlist must exists, check that id is correct" }
-                    return@collect
-                }
+            reload(playlistId, context)
+        }
+    }
 
-                interactor.getTracksInPlaylist(playlist)
-                    .collect {
-                        updateState(playlist, it, context)
-                    }
+    fun removeTrack(track: Track, context: Context) {
+        val playlistId = this.playlistId ?: return
+
+        viewModelScope.launch {
+            interactor.removeTrackFromPlaylist(playlistId, track.trackId)
+            reload(playlistId, context)
+        }
+    }
+
+    private suspend fun reload(playlistId: Int, context: Context) {
+        interactor.getPlaylist(playlistId).collect() { playlist ->
+            if (playlist == null) {
+                assert(false) { "Playlist must exists, check that id is correct" }
+                return@collect
             }
+
+            interactor.getTracksInPlaylist(playlist)
+                .collect {
+                    updateState(playlist, it, context)
+                }
         }
     }
 

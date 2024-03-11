@@ -53,4 +53,7 @@
         <item quantity="many">%1$d минут</item>
         <item quantity="other">%1$d минут</item>
     </plurals>
+    <string name="remove_track_title">Удалить трек</string>
+    <string name="remove_track_description">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="remove">Удалить</string>
 </resources>

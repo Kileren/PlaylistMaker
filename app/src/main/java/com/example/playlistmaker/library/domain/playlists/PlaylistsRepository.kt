@@ -12,6 +12,7 @@ interface PlaylistsRepository {
     suspend fun addTrackToPlaylist(playlist: Playlist, track: Track)
     suspend fun getTracksInPlaylist(playlist: Playlist): Flow<List<Track>>
     suspend fun getTrackSavedInPlaylist(trackId: String): Track
+    suspend fun removeTrackFromPlaylist(playlistId: Int, trackId: String)
     fun saveCoverImage(uri: Uri, imageName: String)
     fun getCoverImage(playlistTitle: String): Uri?
 }
