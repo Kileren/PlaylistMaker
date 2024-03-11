@@ -43,8 +43,7 @@ class PlaylistsRepositoryImpl(
 
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         val newPlaylist = playlist.copy(
-            tracks = playlist.tracks + track.trackId,
-            numberOfTracks = playlist.numberOfTracks + 1
+            tracks = playlist.tracks + track.trackId
         )
         appDatabase.playlistsDao().addPlaylist(map(newPlaylist))
         appDatabase.playlistTracksDao().addTrack(trackDbConverter.mapForPlaylist(track))
@@ -67,8 +66,7 @@ class PlaylistsRepositoryImpl(
         val updatedTracks = playlist.tracks.toMutableList()
         updatedTracks.remove(trackId)
         val updatedPlaylist = playlist.copy(
-            tracks = updatedTracks,
-            numberOfTracks = playlist.numberOfTracks - 1
+            tracks = updatedTracks
         )
         appDatabase.playlistsDao().updatePlaylist(map(updatedPlaylist))
         appDatabase.playlistTracksDao().removeTrack(trackId)
@@ -103,8 +101,7 @@ class PlaylistsRepositoryImpl(
             title = playlist.title,
             description = playlist.description,
             coverUri = playlist.coverUri?.toString(),
-            tracks = playlist.tracks.joinToString(separator = ","),
-            numberOfTracks = playlist.numberOfTracks
+            tracks = if (playlist.tracks.isEmpty()) "" else playlist.tracks.joinToString(separator = ",")
         )
     }
 
@@ -114,8 +111,7 @@ class PlaylistsRepositoryImpl(
             title = playlistEntity.title,
             description = playlistEntity.description,
             coverUri = playlistEntity.coverUri?.toUri(),
-            tracks = playlistEntity.tracks.split(","),
-            numberOfTracks = playlistEntity.numberOfTracks
+            tracks = if (playlistEntity.tracks.isEmpty()) listOf() else playlistEntity.tracks.split(",")
         )
     }
 
