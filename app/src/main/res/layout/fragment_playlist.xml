@@ -129,6 +129,21 @@
             android:background="@drawable/bottom_sheet_notch_view"
             />
 
+        <TextView
+            android:id="@+id/empty_tracks_message"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_44"
+            android:gravity="center"
+            android:fontFamily="@font/ys_display_regular"
+            android:textSize="@dimen/YS_16"
+            android:textColor="@color/dynamic.text.primary"
+            android:text="@string/no_tracks_in_playlist"
+            android:layout_marginTop="@dimen/size_12"
+            android:layout_marginLeft="@dimen/size_16"
+            android:layout_marginRight="@dimen/size_16"
+            android:visibility="gone"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

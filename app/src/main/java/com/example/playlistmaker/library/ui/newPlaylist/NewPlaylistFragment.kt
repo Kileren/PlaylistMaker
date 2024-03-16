@@ -24,6 +24,7 @@ class NewPlaylistFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var isImageSetted = false
+    private var isEditingMode = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,12 +79,38 @@ class NewPlaylistFragment: Fragment() {
             binding.imageView.background = AppCompatResources.getDrawable(requireContext(), R.drawable.rounded_image_view_8dp)
             isImageSetted = true
         }
+        viewModel.observeState().observe(viewLifecycleOwner) { state ->
+            renderState(state)
+        }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             didTapBackButton()
         }
     }
 
+    private fun renderState(state: NewPlaylistState) {
+        when (state) {
+            is NewPlaylistState.Edit -> {
+                isEditingMode = true
+                binding.fragmentTitleTextView.setText(R.string.edit)
+                binding.createButton.setText(R.string.save)
+                binding.titleEditText.setText(state.title)
+                binding.descriptionEditText.setText(state.description)
+
+                if (state.useImagePlaceholder) {
+                    binding.imageView.setImageResource(R.drawable.image_placeholder)
+                    binding.imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+                    binding.imageView.background = null
+                }
+            }
+        }
+    }
+
     private fun didTapBackButton() {
+        if (isEditingMode) {
+            close()
+            return
+        }
+
         val isTitleSetted = binding.titleEditText.text?.isNotEmpty() == true
         val isDescriptionSetted = binding.descriptionEditText.text?.isNotEmpty() == true
 
@@ -95,7 +122,7 @@ class NewPlaylistFragment: Fragment() {
     }
 
     private fun didTapCreateButton() {
-        val title = binding.titleEditText.text.toString() ?: ""
+        val title = binding.titleEditText.text.toString()
         val description = binding.descriptionEditText.text.toString()
 
         viewModel.createPlaylist(
@@ -104,11 +131,13 @@ class NewPlaylistFragment: Fragment() {
         )
         close()
 
-        Toast.makeText(
-            requireContext(),
-            requireContext().getString(R.string.playlist_created_message, title),
-            Toast.LENGTH_SHORT
-        ).show()
+        if (!isEditingMode) {
+            Toast.makeText(
+                requireContext(),
+                requireContext().getString(R.string.playlist_created_message, title),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun showExitConfirmationDialog() {
@@ -126,6 +155,13 @@ class NewPlaylistFragment: Fragment() {
 
     private fun close() {
         findNavController().navigateUp()
+    }
+
+    companion object {
+        const val editPlaylistId = "edit.playlist.id"
+        const val editImageKey = "edit.playlist.image"
+        const val editTitleKey = "edit.playlist.title"
+        const val editDescriptionKey = "edit.playlist.description"
     }
 }
 

@@ -24,12 +24,13 @@
             app:tint="@color/dynamic.text.primary" />
 
         <TextView
+            android:id="@+id/fragment_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/size_12"
             android:fontFamily="@font/ys_display_medium"
             android:gravity="center_vertical"
-            android:text="@string/settings"
+            android:text="@string/new_playlist"
             android:textColor="@color/dynamic.text.primary"
             android:textSize="@dimen/YS_22" />
     </LinearLayout>

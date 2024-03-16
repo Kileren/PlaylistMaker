@@ -60,8 +60,12 @@
     <string name="share">Поделиться</string>
     <string name="edit_information">Редактировать информацию</string>
     <string name="delete_playlist">Удалить плейлист</string>
-    <string name="delete_playlist_confirmation_message">Хотите удалить плейлист «%1$s»?</string>
+    <string name="delete_playlist_confirmation_message">Вы уверены, что хотите удалить этот плейлист?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="playlist_additional_info" translatable="false">%1$s • %2$s</string>
+    <string name="edit">Редактировать</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="no_tracks_in_playlist">В плейлист ещё не добавлен ни один трек</string>
 </resources>

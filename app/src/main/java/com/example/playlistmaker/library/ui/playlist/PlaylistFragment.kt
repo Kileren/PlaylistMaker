@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+import com.example.playlistmaker.library.ui.newPlaylist.NewPlaylistFragment
 import com.example.playlistmaker.player.ui.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.Track
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -35,6 +36,7 @@ class PlaylistFragment: Fragment() {
     )}
 
     private var globalLayoutListener: OnGlobalLayoutListener? = null
+    private var playlistEditAction: () -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,7 +76,7 @@ class PlaylistFragment: Fragment() {
         binding.backButton.setOnClickListener { didTapBackButton() }
 
         binding.menuShareTextView.setOnClickListener { didTapShareButton() }
-        binding.menuEditInformationTextView.setOnClickListener { didTapEditPlaylist() }
+        binding.menuEditInformationTextView.setOnClickListener { playlistEditAction() }
         binding.menuDeletePlaylistTextView.setOnClickListener { didTapDeletePlaylist() }
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.menuBottomSheet)
@@ -98,8 +100,22 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.observeState().observe(viewLifecycleOwner) {
-            renderState(it)
+        viewModel.observeState().observe(viewLifecycleOwner) { state ->
+            renderState(state)
+
+            if (state is PlaylistState.Content) {
+                playlistEditAction = {
+                    findNavController().navigate(
+                        R.id.action_playlistFragment_to_newPlaylistFragment,
+                        bundleOf(
+                            NewPlaylistFragment.editPlaylistId to requireArguments().getInt(playlistKey).toString(),
+                            NewPlaylistFragment.editImageKey to state.coverUri?.toString(),
+                            NewPlaylistFragment.editTitleKey to state.title,
+                            NewPlaylistFragment.editDescriptionKey to state.description
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -135,6 +151,7 @@ class PlaylistFragment: Fragment() {
 
                 if (state.description != null) {
                     binding.subtitleTextView.text = state.description
+                    binding.subtitleTextView.isVisible = true
                 } else {
                     binding.subtitleTextView.isVisible = false
                 }
@@ -147,11 +164,14 @@ class PlaylistFragment: Fragment() {
                 binding.menuPlaylistSubtitleTextView.text = state.totalTracks
 
                 tracksAdapter.update(state.tracks)
+                binding.emptyTracksMessage.isVisible = state.tracks.isEmpty()
+                binding.recyclerView.isVisible = state.tracks.isNotEmpty()
             }
         }
     }
 
     private fun didTapShareButton() {
+        BottomSheetBehavior.from(binding.menuBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
         if (tracksAdapter.itemCount == 0) {
             Toast.makeText(
                 requireContext(),
@@ -167,21 +187,15 @@ class PlaylistFragment: Fragment() {
         BottomSheetBehavior.from(binding.menuBottomSheet).state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    private fun didTapEditPlaylist() {
-
-    }
-
     private fun didTapDeletePlaylist() {
         BottomSheetBehavior.from(binding.menuBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
 
         MaterialAlertDialogBuilder(requireContext())
-            .setMessage(requireContext().getString(
-                R.string.delete_playlist_confirmation_message, binding.titleTextView.text
-            ))
-            .setNegativeButton(requireContext().getString(R.string.no)) { dialog, _ ->
+            .setMessage(requireContext().getString(R.string.delete_playlist_confirmation_message))
+            .setNegativeButton(requireContext().getString(R.string.cancel)) { dialog, _ ->
                 dialog.cancel()
             }
-            .setPositiveButton(requireContext().getString(R.string.yes)) { _, _ ->
+            .setPositiveButton(requireContext().getString(R.string.delete)) { _, _ ->
                 viewModel.deletePlaylist()
             }
             .show()
