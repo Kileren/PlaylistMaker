@@ -41,6 +41,10 @@ class PlaylistsRepositoryImpl(
         appDatabase.playlistsDao().addPlaylist(map(playlist))
     }
 
+    override suspend fun deletePlaylist(id: Int) {
+        appDatabase.playlistsDao().deletePlaylist(id)
+    }
+
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         val newPlaylist = playlist.copy(
             tracks = playlist.tracks + track.trackId

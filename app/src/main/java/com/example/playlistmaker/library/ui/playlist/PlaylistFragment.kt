@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -67,7 +69,25 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun setUpUI() {
+        binding.shareImageView.setOnClickListener { didTapShareButton() }
+        binding.menuImageView.setOnClickListener { didTapMenu() }
         binding.backButton.setOnClickListener { didTapBackButton() }
+
+        binding.menuShareTextView.setOnClickListener { didTapShareButton() }
+        binding.menuEditInformationTextView.setOnClickListener { didTapEditPlaylist() }
+        binding.menuDeletePlaylistTextView.setOnClickListener { didTapDeletePlaylist() }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.menuBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> binding.dimOverlay.isVisible = false
+                    else -> binding.dimOverlay.isVisible = true
+                }
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = tracksAdapter
@@ -86,7 +106,7 @@ class PlaylistFragment: Fragment() {
     private fun renderState(state: PlaylistState) {
         when (state) {
             is PlaylistState.Removed -> {
-                println("")
+                findNavController().navigateUp()
             }
             is PlaylistState.Content -> {
                 if (state.coverUri != null) {
@@ -94,12 +114,24 @@ class PlaylistFragment: Fragment() {
                     binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
                     binding.imageView.scaleX = 1f
                     binding.imageView.scaleY = 1f
+
+                    binding.menuPlaylistImageView.setImageURI(state.coverUri)
+                    binding.menuPlaylistImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                    binding.menuPlaylistImageView.scaleX = 1f
+                    binding.menuPlaylistImageView.scaleY = 1f
+                    binding.menuPlaylistImageView.clipToOutline = true
+                    binding.menuPlaylistImageView.background = AppCompatResources.getDrawable(requireContext(), R.drawable.rounded_image_view_2dp)
                 } else {
                     binding.imageView.setImageResource(R.drawable.image_placeholder)
                     binding.imageView.scaleX = 0.8f
                     binding.imageView.scaleY = 0.8f
+
+                    binding.menuPlaylistImageView.setImageResource(R.drawable.image_placeholder)
+                    binding.menuPlaylistImageView.scaleX = 0.8f
+                    binding.menuPlaylistImageView.scaleY = 0.8f
                 }
                 binding.titleTextView.text = state.title
+                binding.menuPlaylistTitleTextView.text = state.title
 
                 if (state.description != null) {
                     binding.subtitleTextView.text = state.description
@@ -107,11 +139,52 @@ class PlaylistFragment: Fragment() {
                     binding.subtitleTextView.isVisible = false
                 }
 
-                binding.additionalInfoTextView.text = state.additionalInfoText
+                binding.additionalInfoTextView.text = requireContext().getString(
+                    R.string.playlist_additional_info,
+                    state.totalDuration,
+                    state.totalTracks
+                )
+                binding.menuPlaylistSubtitleTextView.text = state.totalTracks
 
                 tracksAdapter.update(state.tracks)
             }
         }
+    }
+
+    private fun didTapShareButton() {
+        if (tracksAdapter.itemCount == 0) {
+            Toast.makeText(
+                requireContext(),
+                R.string.empty_playlist_share_message,
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            viewModel.sharePlaylist(requireContext())
+        }
+    }
+
+    private fun didTapMenu() {
+        BottomSheetBehavior.from(binding.menuBottomSheet).state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun didTapEditPlaylist() {
+
+    }
+
+    private fun didTapDeletePlaylist() {
+        BottomSheetBehavior.from(binding.menuBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage(requireContext().getString(
+                R.string.delete_playlist_confirmation_message, binding.titleTextView.text
+            ))
+            .setNegativeButton(requireContext().getString(R.string.no)) { dialog, _ ->
+                dialog.cancel()
+            }
+            .setPositiveButton(requireContext().getString(R.string.yes)) { _, _ ->
+                viewModel.deletePlaylist()
+            }
+            .show()
     }
 
     private fun didTapBackButton() {

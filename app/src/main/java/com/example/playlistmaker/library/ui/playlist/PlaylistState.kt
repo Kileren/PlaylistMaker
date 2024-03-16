@@ -11,7 +11,8 @@ sealed interface PlaylistState {
         val coverUri: Uri?,
         val title: String,
         val description: String?,
-        val additionalInfoText: String,
+        val totalDuration: String,
+        val totalTracks: String,
         val tracks: List<Track>
     ): PlaylistState
 }

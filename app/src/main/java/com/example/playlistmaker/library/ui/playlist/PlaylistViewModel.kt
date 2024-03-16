@@ -9,12 +9,14 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.library.domain.Playlist
 import com.example.playlistmaker.library.domain.playlists.PlaylistsInteractor
 import com.example.playlistmaker.search.domain.Track
+import com.example.playlistmaker.sharing.domain.SharingInteractor
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlaylistViewModel(
     private val interactor: PlaylistsInteractor,
+    private val sharingInteractor: SharingInteractor
 ): ViewModel() {
 
     private val state = MutableLiveData<PlaylistState>()
@@ -40,6 +42,35 @@ class PlaylistViewModel(
         }
     }
 
+    fun sharePlaylist(context: Context) {
+        val value = state.value as? PlaylistState.Content ?: return
+        var shareInfo = ""
+
+        shareInfo += value.title + "\n"
+        if (value.description != null) {
+            shareInfo += value.description + "\n"
+        }
+        shareInfo += context.resources.getQuantityString(
+            R.plurals.number_of_tracks,
+            value.tracks.size,
+            value.tracks.size
+        ) + "\n"
+        value.tracks.forEachIndexed { index, track ->
+            shareInfo += "${index + 1}. ${track.artistName} - ${track.trackName} (${track.trackTime})\n"
+        }
+
+        sharingInteractor.shareText(shareInfo)
+    }
+
+    fun deletePlaylist() {
+        val id = playlistId ?: return
+
+        viewModelScope.launch {
+            interactor.deletePlaylist(id)
+            state.postValue(PlaylistState.Removed)
+        }
+    }
+
     private suspend fun reload(playlistId: Int, context: Context) {
         interactor.getPlaylist(playlistId).collect() { playlist ->
             if (playlist == null) {
@@ -59,34 +90,37 @@ class PlaylistViewModel(
             coverUri = playlist.coverUri,
             title = playlist.title,
             description = if (playlist.description.isNullOrEmpty()) null else playlist.description,
-            additionalInfoText = getAdditionalInfoText(tracks, context),
+            totalDuration = getTotalDuration(tracks, context),
+            totalTracks = getTotalTracks(tracks, context),
             tracks = tracks
         )
         this.state.postValue(state)
     }
 
-    private fun getAdditionalInfoText(tracks: List<Track>, context: Context): String {
+    private fun getTotalDuration(tracks: List<Track>, context: Context): String {
         if (tracks.isEmpty()) {
-            val duration = context.resources.getQuantityString(R.plurals.minutes, 0, 0)
-            val tracksCount = context.resources.getQuantityString(R.plurals.number_of_tracks, 0, 0)
-            return "$duration • $tracksCount"
+            return context.resources.getQuantityString(R.plurals.minutes, 0, 0)
         }
 
         val totalDurationMillis = tracks
             .map { it.trackTimeMillis }
             .reduce { acc, time -> acc + time }
         val totalDuration = SimpleDateFormat("mm", Locale.getDefault()).format(totalDurationMillis).toInt()
-        val duration = context.resources.getQuantityString(
+        return context.resources.getQuantityString(
             R.plurals.minutes,
             totalDuration,
             totalDuration
         )
-        val tracksCount = context.resources.getQuantityString(
+    }
+
+    private fun getTotalTracks(tracks: List<Track>, context: Context): String {
+        if (tracks.isEmpty()) {
+            return context.resources.getQuantityString(R.plurals.number_of_tracks, 0, 0)
+        }
+        return context.resources.getQuantityString(
             R.plurals.number_of_tracks,
             tracks.size,
             tracks.size
         )
-
-        return "$duration • $tracksCount"
     }
 }
