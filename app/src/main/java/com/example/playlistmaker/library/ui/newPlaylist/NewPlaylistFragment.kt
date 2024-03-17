@@ -102,6 +102,9 @@ class NewPlaylistFragment: Fragment() {
                     binding.imageView.background = null
                 }
             }
+            is NewPlaylistState.Close -> {
+                close()
+            }
         }
     }
 
@@ -129,7 +132,6 @@ class NewPlaylistFragment: Fragment() {
             title = title,
             description = description
         )
-        close()
 
         if (!isEditingMode) {
             Toast.makeText(

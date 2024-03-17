@@ -87,6 +87,7 @@ class NewPlaylistViewModel(
                     coverUri = interactor.getCoverImage(title)
                 )
                 playlistsInteractor.updatePlaylist(updatedPlaylist)
+                stateLiveData.postValue(NewPlaylistState.Close)
             }
         }
     }
@@ -107,6 +108,7 @@ class NewPlaylistViewModel(
 
         viewModelScope.launch {
             interactor.createPlaylist(playlist)
+            stateLiveData.postValue(NewPlaylistState.Close)
         }
     }
 
