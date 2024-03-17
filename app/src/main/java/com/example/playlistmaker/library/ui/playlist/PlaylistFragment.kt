@@ -190,12 +190,13 @@ class PlaylistFragment: Fragment() {
     private fun didTapDeletePlaylist() {
         BottomSheetBehavior.from(binding.menuBottomSheet).state = BottomSheetBehavior.STATE_HIDDEN
 
-        MaterialAlertDialogBuilder(requireContext())
-            .setMessage(requireContext().getString(R.string.delete_playlist_confirmation_message))
-            .setNegativeButton(requireContext().getString(R.string.cancel)) { dialog, _ ->
+        MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+            .setTitle(R.string.delete_playlist)
+            .setMessage(R.string.delete_playlist_confirmation_message)
+            .setNegativeButton(requireContext().getString(R.string.no)) { dialog, _ ->
                 dialog.cancel()
             }
-            .setPositiveButton(requireContext().getString(R.string.delete)) { _, _ ->
+            .setPositiveButton(requireContext().getString(R.string.yes)) { _, _ ->
                 viewModel.deletePlaylist()
             }
             .show()
@@ -213,13 +214,13 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun didTapTrackLong(track: Track) {
-        MaterialAlertDialogBuilder(requireContext())
+        MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
             .setTitle(requireContext().getString(R.string.remove_track_title))
             .setMessage(requireContext().getString(R.string.remove_track_description))
-            .setNeutralButton(requireContext().getString(R.string.cancel)) { dialog, _ ->
+            .setNegativeButton(requireContext().getString(R.string.no)) { dialog, _ ->
                 dialog.cancel()
             }
-            .setNegativeButton(requireContext().getString(R.string.remove)) { _, _ ->
+            .setPositiveButton(requireContext().getString(R.string.yes)) { _, _ ->
                 viewModel.removeTrack(track, requireContext())
             }
             .show()
