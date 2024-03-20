@@ -28,17 +28,58 @@ class PlaylistsRepositoryImpl(
         emit(playlists)
     }
 
+    override suspend fun getPlaylist(id: Int): Flow<Playlist?> = flow {
+        val playlist = appDatabase.playlistsDao().getPlaylist(id)
+        if (playlist != null) {
+            emit(map(playlist))
+        } else {
+            emit(null)
+        }
+    }
+
     override suspend fun createPlaylist(playlist: Playlist) {
         appDatabase.playlistsDao().addPlaylist(map(playlist))
     }
 
+    override suspend fun deletePlaylist(id: Int) {
+        appDatabase.playlistsDao().deletePlaylist(id)
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        appDatabase.playlistsDao().updatePlaylist(map(playlist))
+    }
+
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         val newPlaylist = playlist.copy(
-            tracks = playlist.tracks + track.trackId,
-            numberOfTracks = playlist.numberOfTracks + 1
+            tracks = playlist.tracks + track.trackId
         )
         appDatabase.playlistsDao().addPlaylist(map(newPlaylist))
         appDatabase.playlistTracksDao().addTrack(trackDbConverter.mapForPlaylist(track))
+    }
+
+    override suspend fun getTracksInPlaylist(playlist: Playlist): Flow<List<Track>> = flow {
+        val tracks = appDatabase.playlistTracksDao().getTracks(playlist.tracks)
+            .map { trackDbConverter.mapFromPlaylist(it) }
+        val sortedTracks = playlist.tracks
+            .reversed()
+            .mapNotNull { id -> tracks.find { id == it.trackId } }
+        emit(sortedTracks)
+    }
+
+    override suspend fun getTrackSavedInPlaylist(trackId: String): Track {
+        val trackEntity = appDatabase.playlistTracksDao().getTracks(listOf(trackId)).first()
+        return trackDbConverter.mapFromPlaylist(trackEntity)
+    }
+
+    override suspend fun removeTrackFromPlaylist(playlistId: Int, trackId: String) {
+        val playlistEntity = appDatabase.playlistsDao().getPlaylist(playlistId) ?: return
+        val playlist = map(playlistEntity)
+        val updatedTracks = playlist.tracks.toMutableList()
+        updatedTracks.remove(trackId)
+        val updatedPlaylist = playlist.copy(
+            tracks = updatedTracks
+        )
+        appDatabase.playlistsDao().updatePlaylist(map(updatedPlaylist))
     }
 
     override fun saveCoverImage(uri: Uri, imageName: String) {
@@ -70,8 +111,7 @@ class PlaylistsRepositoryImpl(
             title = playlist.title,
             description = playlist.description,
             coverUri = playlist.coverUri?.toString(),
-            tracks = playlist.tracks.joinToString(separator = ","),
-            numberOfTracks = playlist.numberOfTracks
+            tracks = if (playlist.tracks.isEmpty()) "" else playlist.tracks.joinToString(separator = ",")
         )
     }
 
@@ -81,8 +121,7 @@ class PlaylistsRepositoryImpl(
             title = playlistEntity.title,
             description = playlistEntity.description,
             coverUri = playlistEntity.coverUri?.toUri(),
-            tracks = playlistEntity.tracks.split(","),
-            numberOfTracks = playlistEntity.numberOfTracks
+            tracks = if (playlistEntity.tracks.isEmpty()) listOf() else playlistEntity.tracks.split(",")
         )
     }
 

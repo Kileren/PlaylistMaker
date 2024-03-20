@@ -19,6 +19,15 @@ class ExternalNavigatorImpl(
         }
     }
 
+    override fun shareText(text: String) {
+        Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(this)
+        }
+    }
+
     override fun openTerms() {
         Intent(Intent.ACTION_VIEW).apply {
             val agreementURL = context.getString(R.string.practicum_user_agreement_link)

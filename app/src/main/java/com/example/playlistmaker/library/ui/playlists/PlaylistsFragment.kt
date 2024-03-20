@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.library.domain.Playlist
+import com.example.playlistmaker.library.ui.playlist.PlaylistFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment: Fragment() {
@@ -18,7 +21,7 @@ class PlaylistsFragment: Fragment() {
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
 
-    private val playlistsAdapter = PlaylistsAdapter(listOf())
+    private val playlistsAdapter = PlaylistsAdapter(listOf()) { didTapPlaylist(it) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +76,13 @@ class PlaylistsFragment: Fragment() {
                 playlistsAdapter.update(state.playlists)
             }
         }
+    }
+
+    private fun didTapPlaylist(playlist: Playlist) {
+        findNavController().navigate(
+            R.id.action_mediaLibraryFragment_to_playlistFragment,
+            bundleOf(PlaylistFragment.playlistKey to playlist.id)
+        )
     }
 
     companion object {

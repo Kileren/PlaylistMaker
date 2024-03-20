@@ -31,8 +31,8 @@ class PlaylistsViewHolder(view: View): RecyclerView.ViewHolder(view) {
         titleTextView.text = playlist.title
         descriptionTextView.text = itemView.context.resources.getQuantityString(
             R.plurals.number_of_tracks,
-            playlist.numberOfTracks,
-            playlist.numberOfTracks
+            playlist.tracks.size,
+            playlist.tracks.size
         )
     }
 }

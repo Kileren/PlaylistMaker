@@ -19,7 +19,7 @@ import org.koin.dsl.module
 val interactorModule = module {
 
     factory<AudioPlayerInteractor> {
-        AudioPlayerInteractorImpl(get(), get())
+        AudioPlayerInteractorImpl(get(), get(), get())
     }
 
     factory<SearchInteractor> {
